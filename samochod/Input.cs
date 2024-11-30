@@ -44,7 +44,7 @@ namespace samochod
                 {
                     brake = true;
                 }
-                if (IsKeyDown(Keys.Space))
+                if (IsKeyPressed(Keys.Space))
                 {
                     shiftGear = true;
                 }

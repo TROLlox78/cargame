@@ -40,6 +40,7 @@ namespace samochod
             _spriteBatch = new SpriteBatch(GraphicsDevice);
             // load textures
             textures.Add(Content.Load<Texture2D>("Sprites/cars"));
+            textures.Add(Content.Load<Texture2D>("Sprites/steering_wheel"));
 
             // load entity manager
             entityManager = new EntityManager(textures);
@@ -55,6 +56,20 @@ namespace samochod
             Input.Update(Mouse.GetState(), Keyboard.GetState());
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Input.IsKeyDown(Keys.Escape))
                 Exit();
+
+
+            if (entityManager.player?.alive == false)
+            {
+                entityManager.AddPlayer();
+
+            }
+
+            if (Input.IsKeyDown(Keys.R))
+            {
+                if (entityManager.player != null)
+                entityManager.player.alive = false;
+            }
+            
 
             entityManager.Update(gameTime);
 

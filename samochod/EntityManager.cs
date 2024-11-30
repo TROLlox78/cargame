@@ -16,7 +16,7 @@ namespace samochod
         // pool of available models to use
         public Dictionary<EntityType, Entity> entityPool;
         List<Texture2D> textures;
-
+        public Player player;
 
         private int globalID = 0;
 
@@ -32,6 +32,7 @@ namespace samochod
             {
                 { EntityType.car, new Car(textures[0] ) },
                 { EntityType.player, new Player(textures[0] ) },
+                //{ EntityType.steeringWheel, new Entity(textures[1] ) },
             };
             
         }
@@ -46,13 +47,14 @@ namespace samochod
         {
 
         }
-        public void AddPlayer()
+        public Player AddPlayer()
         {
-            Player player = entityPool[EntityType.player].Clone() as Player;
+            player = entityPool[EntityType.player].Clone() as Player;
             
             player.init();
             player.ID = globalID++;
             entities.Add(player);
+            return player;
         }
         public void AddCar(EntityType model )
         {

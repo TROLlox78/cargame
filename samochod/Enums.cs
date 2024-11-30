@@ -10,6 +10,7 @@ namespace samochod
     {
         player,
         car,
+        steeringWheel,
     }
 
 }

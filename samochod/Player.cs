@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Reflection.Metadata;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -13,16 +14,19 @@ namespace samochod
     public class Player : Car
     {
         // constants
-        const float topSpeed = 10f;
+        const float topSpeed = 5f;
 
         Vector2 velocity;
         Vector2 velocityDirection;
         float speed;
         float friction;
+        float equidirection = 1;
+        float wheelRotation = 0;
         public Player(Texture2D texture) : base(texture){}
         public void init()
         {
             velocity = new Vector2();
+            origin.Y += 30;
             speed = 0;
             friction = 0.2f;
             rotation = 0.0f;
@@ -33,12 +37,22 @@ namespace samochod
             if (speed != 0)
             {
                 speed -= friction;
+
+                rotation += wheelRotation * speed / 10;
+
+                if (wheelRotation != 0)
+                {
+                    //int sign = wheelRotation > 0 ? 1 : -1; 
+                    // subtract some amount speed from wheel
+                    wheelRotation /= 1.1f;
+                }
+                
                 if (speed < 0)
                 {
                     speed = 0;
                 }
             }
-            Debug.WriteLine(rotation);
+            Debug.WriteLine("Wh {0}",wheelRotation);
 
             if (Input.accelerate) {
                 if (speed < topSpeed)
@@ -48,16 +62,32 @@ namespace samochod
             }
             if (Input.steerLeft)
             {
-                rotation -= 0.1f;
+                if (wheelRotation > - 180* 3.14 / 180) 
+                wheelRotation -= 0.05f;
             }
             if (Input.steerRight)
             {
-                rotation += 0.1f;
+                if (wheelRotation < 180 * 3.14 / 180)
+                    wheelRotation += 0.05f;
+            }
+            if (Input.brake)
+            {
+                if (speed > 0)
+                {
+                    speed -= 0.2f;
+                }
+            }
+            if (Input.shiftGear)
+            {
+                if (speed <= 0.2f)
+                {
+                    equidirection *= -equidirection;
+                }
             }
 
             //rotation = (float)Math.Atan2((double)position.Y, (double)position.X);
             velocityDirection = new Vector2((float)Math.Cos(rotation), (float)Math.Sin(rotation));
-            velocity = speed * velocityDirection;
+            velocity = equidirection * speed * velocityDirection;
             position += velocity;
 
         }
