@@ -20,7 +20,7 @@ namespace samochod
         Vector2 velocityDirection;
         float speed;
         float friction;
-        float equidirection = 1;
+        float direction = 1;
         float wheelRotation = 0;
         public Player(Texture2D texture) : base(texture){}
         public void init()
@@ -38,7 +38,7 @@ namespace samochod
             {
                 speed -= friction;
 
-                rotation += wheelRotation * speed / 10;
+                rotation += direction * wheelRotation * speed / 40;
 
                 if (wheelRotation != 0)
                 {
@@ -62,12 +62,12 @@ namespace samochod
             }
             if (Input.steerLeft)
             {
-                if (wheelRotation > - 180* 3.14 / 180) 
+                if (wheelRotation > - 90* 3.14 / 180) 
                 wheelRotation -= 0.05f;
             }
             if (Input.steerRight)
             {
-                if (wheelRotation < 180 * 3.14 / 180)
+                if (wheelRotation < 90 * 3.14 / 180)
                     wheelRotation += 0.05f;
             }
             if (Input.brake)
@@ -81,13 +81,13 @@ namespace samochod
             {
                 if (speed <= 0.2f)
                 {
-                    equidirection *= -equidirection;
+                    direction *= -1;
                 }
             }
 
-            //rotation = (float)Math.Atan2((double)position.Y, (double)position.X);
+            
             velocityDirection = new Vector2((float)Math.Cos(rotation), (float)Math.Sin(rotation));
-            velocity = equidirection * speed * velocityDirection;
+            velocity =  direction*  speed * velocityDirection;
             position += velocity;
 
         }

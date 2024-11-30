@@ -48,6 +48,7 @@ namespace samochod
                 {
                     shiftGear = true;
                 }
+
             }
 
             public static void Update(MouseState mouse, KeyboardState keyboard)
