@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -29,7 +30,8 @@ namespace samochod
         {
             entityPool = new Dictionary<EntityType, Entity>()
             {
-                { EntityType.car, new Car(textures[0] ) }
+                { EntityType.car, new Car(textures[0] ) },
+                { EntityType.player, new Player(textures[0] ) },
             };
             
         }
@@ -43,6 +45,14 @@ namespace samochod
         public void AddEntity(EntityType entityType) 
         {
 
+        }
+        public void AddPlayer()
+        {
+            Player player = entityPool[EntityType.player].Clone() as Player;
+            
+            player.init();
+            player.ID = globalID++;
+            entities.Add(player);
         }
         public void AddCar(EntityType model )
         {

@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
+using System.Data;
 
 namespace samochod
 {
@@ -13,6 +14,42 @@ namespace samochod
             public static MouseState currentMouse;
             public static Point mousePosition;
 
+            // player input
+            public static bool steerLeft;
+            public static bool steerRight;
+            public static bool accelerate;
+            public static bool brake;
+            public static bool shiftGear;
+
+            public static void UpdatePlayer()
+            {
+                steerLeft = false;
+                steerRight = false;
+                accelerate = false;
+                brake = false;
+                shiftGear = false;
+                if (IsKeyDown(Keys.A))
+                {
+                    steerLeft = true;
+                }
+                if (IsKeyDown(Keys.D))
+                {
+                    steerRight = true;
+                }
+                if (IsKeyDown(Keys.W))
+                {
+                    accelerate = true;
+                }
+                if (IsKeyDown(Keys.S))
+                {
+                    brake = true;
+                }
+                if (IsKeyDown(Keys.Space))
+                {
+                    shiftGear = true;
+                }
+            }
+
             public static void Update(MouseState mouse, KeyboardState keyboard)
             {
                 previousKeyboard = currentKeyboard;
@@ -20,7 +57,10 @@ namespace samochod
                 previousMouse = currentMouse;
                 currentMouse = mouse;
                 mousePosition = mouse.Position;
+
+                UpdatePlayer();
             }
+
             public static bool IsKeyPressed(Keys key)
             {
                 return (currentKeyboard.IsKeyDown(key) && previousKeyboard.IsKeyUp(key));

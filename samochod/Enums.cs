@@ -8,8 +8,8 @@ namespace samochod
 {
    public enum EntityType
     {
+        player,
         car,
-
     }
 
 }

@@ -10,13 +10,15 @@ namespace samochod
 {
     public class Car : Entity
     {
-        Rectangle textureBoundry;
-        
+        protected Rectangle textureBoundry;
+        int width = 42;
+        int height = 90;
         public Car(Texture2D texture) : base(texture)
         {
-            textureBoundry = new Rectangle(69,17, 42, 90);
+            textureBoundry = new Rectangle(69,17, width, height);
             position = new Vector2(100, 100);
-            Debug.WriteLine("initialized car");
+            origin = new Vector2(width/2, height/2);
+            Debug.WriteLine("created car model");
         }
         public override void Draw(SpriteBatch spriteBatch)
         {

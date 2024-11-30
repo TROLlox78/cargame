@@ -46,6 +46,7 @@ namespace samochod
 
             // temp adding car
             entityManager.AddCar(EntityType.car);
+            entityManager.AddPlayer();
         }
 
         protected override void Update(GameTime gameTime)
@@ -59,9 +60,7 @@ namespace samochod
 
             if (sw.ElapsedMilliseconds > 1000) {
                 sw.Restart();
-                Debug.Write(entityManager.entities.Count);
-                Debug.Write('\n');
-
+                Debug.WriteLine("{0}", entityManager.entities.Count);
             }
             base.Update(gameTime);
         }
