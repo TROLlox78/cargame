@@ -12,6 +12,7 @@ namespace samochod
         private GraphicsDeviceManager _graphics;
         private SpriteBatch _spriteBatch;
         private EntityManager entityManager;
+        private TextManager text;
         Stopwatch sw;
         // maybe create a texture manager but, not useful for small game
         List<Texture2D> textures;
@@ -31,6 +32,9 @@ namespace samochod
             _graphics.PreferredBackBufferHeight = 1024;
             _graphics.ApplyChanges();
             textures = new List<Texture2D>();
+            text = new TextManager();
+            text.blazed = Content.Load<SpriteFont>("Fonts/blazed");
+            text.fipps  = Content.Load<SpriteFont>("Fonts/fipps");
             sw = new Stopwatch();
             base.Initialize();
         }
@@ -41,6 +45,8 @@ namespace samochod
             // load textures
             textures.Add(Content.Load<Texture2D>("Sprites/cars"));
             textures.Add(Content.Load<Texture2D>("Sprites/steering_wheel"));
+            textures.Add(new Texture2D(GraphicsDevice, 1, 1));
+            textures[2].SetData(new Color[] { Color.White });
 
             // load entity manager
             entityManager = new EntityManager(textures);
@@ -54,6 +60,7 @@ namespace samochod
         {
             sw.Start();
             Input.Update(Mouse.GetState(), Keyboard.GetState());
+            text.Write(new Text(string.Format("mX: {0} mY: {1}", Input.mousePosition.X, Input.mousePosition.Y)));
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Input.IsKeyDown(Keys.Escape))
                 Exit();
 
@@ -69,13 +76,20 @@ namespace samochod
                 if (entityManager.player != null)
                 entityManager.player.alive = false;
             }
+            if (Input.IsKeyPressed(Keys.T))
+            {
+                List<Point> x = entityManager.player.hitbox.points;
+                for (int i = 0; i < x.Count; i++) 
+                    Debug.WriteLine("point {0} x:{1} y:{2}", i, x[i].X, x[i].Y);
+                
+            }
             
 
             entityManager.Update(gameTime);
 
             if (sw.ElapsedMilliseconds > 1000) {
                 sw.Restart();
-                Debug.WriteLine("{0}", entityManager.entities.Count);
+                //Debug.WriteLine("{0}", entityManager.entities.Count);
             }
             base.Update(gameTime);
         }
@@ -86,7 +100,7 @@ namespace samochod
             _spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.PointClamp, null, null, null, null);
 
             entityManager.Draw(_spriteBatch);
-
+            text.Draw(_spriteBatch);
             _spriteBatch.End();
             base.Draw(gameTime);
         }

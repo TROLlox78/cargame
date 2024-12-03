@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 using System.Text;
@@ -45,6 +46,7 @@ namespace samochod
 
         public void AddEntity(EntityType entityType) 
         {
+            Debug.WriteLine("IDg");
 
         }
         public Player AddPlayer()
@@ -75,12 +77,22 @@ namespace samochod
                     entities.RemoveAt(i);
                 }
             }
+            foreach (var entity in entities) {
+                if (entity != player)
+                {
+
+                    player.hitbox.Intersects(entity?.hitbox);
+                }
+            }
+
         }
         public void Draw(SpriteBatch spriteBatch)
         {
             foreach (var entity in entities)
             {
+                
                 entity.Draw(spriteBatch);
+                //spriteBatch.Draw(textures[2], )
             }
         }
     }

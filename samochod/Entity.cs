@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using samochod.monogame_test;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -17,16 +18,30 @@ namespace samochod
         public Vector2 position, origin;
         public float rotation;
         protected Texture2D texture;
-        public float scale = 1;
+        public int width, height;
+        public float scale;
+        public bool mouseable = true;
+        public Shape hitbox;
         public Entity(Texture2D texture)
         {
             this.texture = texture;
-  
+            width = texture.Width; height = texture.Height;
+            scale = 1;// READ FROM LEVEL
         }
-
+        public virtual void UpdateMouse() 
+        {
+            if (!mouseable) { return; }
+            if (Input.IsLeftPressed())
+            {
+                if (width>= DistanceTo(Input.mousePosition))
+                {
+                    position = toVect(Input.mousePosition);
+                }
+            }
+        }
         public virtual void Update(GameTime gameTime)
         {
-            
+            UpdateMouse();
         }
         public virtual void Draw(SpriteBatch spriteBatch)
         {
@@ -44,6 +59,16 @@ namespace samochod
             // return a clone of an object
             // otherwise copies by referenece/pointer
             return this.MemberwiseClone();
+        }
+        public float DistanceTo(Point point)
+        {
+            float distX = (point.X - position.X);
+            float distY = (point.Y - position.Y);
+            return (float)Math.Sqrt(distX*distX + distY*distY);
+        }
+        public Vector2 toVect(Point p) 
+        {
+            return new Vector2(p.X, p.Y);
         }
     }
 }

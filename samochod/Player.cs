@@ -25,6 +25,7 @@ namespace samochod
         public Player(Texture2D texture) : base(texture){}
         public void init()
         {
+            hitbox = new Shape(position, origin, scale, rotation, texture);
             velocity = new Vector2();
             origin.Y += 30;
             speed = 0;
@@ -33,6 +34,8 @@ namespace samochod
         }
         public override void Update(GameTime gametime)
         {
+
+
             rotation %= 6.28f;
             if (speed != 0)
             {
@@ -52,7 +55,7 @@ namespace samochod
                     speed = 0;
                 }
             }
-            Debug.WriteLine("Wh {0}",wheelRotation);
+            //Debug.WriteLine("Wh {0}",wheelRotation);
 
             if (Input.accelerate) {
                 if (speed < topSpeed)
