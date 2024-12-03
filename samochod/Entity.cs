@@ -15,13 +15,22 @@ namespace samochod
     {
         public int ID;
         public bool alive = true;
-        public Vector2 position, origin;
-        public float rotation;
-        protected Texture2D texture;
-        public int width, height;
-        public float scale;
         public bool mouseable = true;
-        public Shape hitbox;
+
+        public Vector2 position, 
+            origin, // offset to the center of the texture from it's top left corner
+            offset; // center of mass offset
+        public float rotation;
+        public float scale;
+
+        protected Texture2D texture;
+        protected Rectangle textureBoundry;
+        public int width, height;
+        public Shape hitbox {
+            get
+            { return new Shape(position, offset, scale, rotation, textureBoundry);  }
+                
+                }
         public Entity(Texture2D texture)
         {
             this.texture = texture;

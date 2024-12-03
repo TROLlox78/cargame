@@ -50,7 +50,7 @@ namespace samochod
 
             // load entity manager
             entityManager = new EntityManager(textures);
-
+            entityManager.text = text;
             // temp adding car
             entityManager.AddCar(EntityType.car);
             entityManager.AddPlayer();
@@ -61,6 +61,8 @@ namespace samochod
             sw.Start();
             Input.Update(Mouse.GetState(), Keyboard.GetState());
             text.Write(new Text(string.Format("mX: {0} mY: {1}", Input.mousePosition.X, Input.mousePosition.Y)));
+            text.Write(new Text(string.Format("pX: {0} pY: {1}", entityManager.player.position.X, entityManager.player.position.Y)));
+            text.Write(new Text(string.Format("pX: {0} pY: {1}", entityManager.entities[0].position.X, entityManager.entities[0].position.Y)));
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Input.IsKeyDown(Keys.Escape))
                 Exit();
 
@@ -78,7 +80,7 @@ namespace samochod
             }
             if (Input.IsKeyPressed(Keys.T))
             {
-                List<Point> x = entityManager.player.hitbox.points;
+                List<Vector2> x = entityManager.player.hitbox.points;
                 for (int i = 0; i < x.Count; i++) 
                     Debug.WriteLine("point {0} x:{1} y:{2}", i, x[i].X, x[i].Y);
                 

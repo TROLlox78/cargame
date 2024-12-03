@@ -25,9 +25,9 @@ namespace samochod
         public Player(Texture2D texture) : base(texture){}
         public void init()
         {
-            hitbox = new Shape(position, origin, scale, rotation, texture);
             velocity = new Vector2();
-            origin.Y += 30;
+            offset = new Vector2(-30, 0);
+            origin.X -= 30;
             speed = 0;
             friction = 0.2f;
             rotation = 0.0f;
@@ -99,7 +99,7 @@ namespace samochod
         {
             if (texture != null)
             {
-                spriteBatch.Draw(texture, position, textureBoundry, Color.White, rotation+3.14f/2, origin, scale, SpriteEffects.None, 0f);
+                spriteBatch.Draw(texture, position, textureBoundry, Color.White, rotation, origin, scale, SpriteEffects.None, 0f);
             }
             else
             {

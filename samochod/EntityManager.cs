@@ -18,7 +18,7 @@ namespace samochod
         public Dictionary<EntityType, Entity> entityPool;
         List<Texture2D> textures;
         public Player player;
-
+        public TextManager text;
         private int globalID = 0;
 
         public void initEntityManager()
@@ -77,12 +77,26 @@ namespace samochod
                     entities.RemoveAt(i);
                 }
             }
+            bool collided = false;
             foreach (var entity in entities) {
                 if (entity != player)
                 {
 
-                    player.hitbox.Intersects(entity?.hitbox);
+                    if (player.hitbox.Intersects(entity?.hitbox))
+                    {
+                        collided = true;
+                    }
+
                 }
+                
+            }
+            if (collided)
+            {
+                text.Write(new Text("Player touching"));
+            }
+            else {
+                text.Write(new Text("Player chill"));
+
             }
 
         }
