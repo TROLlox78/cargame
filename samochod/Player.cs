@@ -105,6 +105,7 @@ namespace samochod
             {
                 Debug.WriteLine("Entity: {0} has no texture", ID);
             }
+            DrawHitbox(spriteBatch);
         }
 
     }

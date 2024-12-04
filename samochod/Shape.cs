@@ -12,15 +12,21 @@ namespace samochod
     
     public class Shape
     {
-        private class Edge
+        public class Edge
         {
-            Vector2 x, y;
+            public Vector2 x, y;
+            public Edge() { }
+            public Edge (Vector2 x, Vector2 y)
+            {
+                this.x = x;
+                this.y = y;
+            }
         }
         // points have to be added in a clockwise manner
         public Vector2 position;
-        public List<Vector2> points; // points in space
+        public List<Vector2> points;    // points in space
+        public List<Edge> edges;        // edges made from points
         public float angle = 0;
-
         public void rot()
         {
             // should be normalized to zero
@@ -34,6 +40,17 @@ namespace samochod
                 float newX = (float)(x*Math.Cos(angle) - y*Math.Sin(angle));
                 float newY = (float)(x*Math.Sin(angle) + y*Math.Cos(angle));
                 points[i] = new Vector2(newX+px, newY+py);
+            }
+        }
+
+
+        public void makeEdges()
+        {
+           
+            edges = new List<Edge>(points.Count);
+            for (int i = 0; i < points.Count; i++)
+            {
+                edges.Add( new Edge(points[i], points[(i+1)%points.Count]));
             }
         }
 
@@ -56,10 +73,23 @@ namespace samochod
             // bottom right
             points.Add(new Vector2(pX + width, pY - height));
             rot();// rotate the points after creation
+            makeEdges();
         }
 
-        public bool lineIntersect(float x1, float y1, float x2, float y2, float x3, float y3, float x4, float y4)
+        public bool lineIntersect(Edge e1, Edge e2)
         {
+            // edge 1 line points
+            float x1 = e1.x.X;
+            float y1 = e1.x.Y;
+
+            float x2 = e1.y.X;
+            float y2 = e1.y.Y;
+             // edge 2 line points
+            float x3 = e2.x.X;
+            float y3 = e2.x.Y;
+
+            float x4 = e2.y.X;
+            float y4 = e2.y.Y;
 
             float denominator = ((y4 - y3) * (x2 - x1) - (x4 - x3) * (y2 - y1));
             if (denominator == 0) { return false; }
@@ -76,19 +106,15 @@ namespace samochod
         }
         public bool Intersects(Shape other) 
         {
-            for (int i = 0; i < points.Count-1; i++)
+            for (int i = 0; i < edges.Count; i++)
             {
-                for (int j = 0; j < other.points.Count - 1; j++)
+                for (int j = 0; j < other.edges.Count; j++)
                 {   // edge testing
-                    if (lineIntersect(
-                        points[i].X, points[i].Y, points[i + 1].X, points[i + 1].Y, 
-                        other.points[i].X, other.points[i].Y,
-                        other.points[i+1].X, other.points[i + 1].Y
-                        ))
-                        {
+                    if (lineIntersect(edges[i], other.edges[j]))
+                    {
                         return true;
-                        }
-                        }
+                    }
+                }
             }
             return false;
         }

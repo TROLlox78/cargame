@@ -17,7 +17,7 @@ namespace samochod
         public int ID;
         public bool alive = true;
         public bool mouseable = true;
-
+        Vector2 p2;
         public Vector2 position, 
             origin, // offset to the center of the texture from it's top left corner
             offset; // center of mass offset
@@ -44,14 +44,20 @@ namespace samochod
             if (!mouseable) { return; }
             if (Input.IsLeftPressed())
             {
+                p2 = toVect(Input.mousePosition);
                 if (width>= DistanceTo(Input.mousePosition))
                 {
                     position = toVect(Input.mousePosition);
                 }
             }
+            if (Input.IsRightPressed())
+            {
+                rotation += 0.1f;
+            }
         }
         public virtual void Update(GameTime gameTime)
         {
+            rotation %= 6.28f;
             UpdateMouse();
         }
         public virtual void Draw(SpriteBatch spriteBatch)
@@ -86,10 +92,13 @@ namespace samochod
         {
             return  p1.Y + (inc - p1.X)*(p2.Y-p1.Y)/(p2.X-p1.X);
         }
-        protected List<Vector2> FindPoints(Vector2 p1, Vector2 p2)
+        protected List<Vector2> Interpolate(Vector2 p1, Vector2 p2)
         {
 
             List<Vector2> pointSet = new List<Vector2>();
+            float dist = Math.Abs(p2.X - p1.X);
+
+
             if (p1.X> p2.X)
             {
                 Vector2 temp = p1;
@@ -98,7 +107,6 @@ namespace samochod
             }
             for (int x = (int)p1.X; x < p2.X; x++)
             {
-                float dist = p2.X - p1.X;
                 Vector2 vector2 = new Vector2();
                 //float increment = (x - p1.X) / (dist);
                 vector2.Y = lerp(p1, p2, x);
@@ -110,13 +118,24 @@ namespace samochod
         }
         protected void DrawHitbox(SpriteBatch sprite)
         {
+            float scale = 2;
             Vector2 p1 = new Vector2(200, 200);
-            Vector2 p2 = new Vector2(400, 250);
-            List<Vector2> points = FindPoints(p1,p2);
-            foreach(Vector2 point in points)
+
+            for (int i = 0; i < hitbox.points.Count-1; i++)
             {
-                //sprite.Draw(textures[2], point, null,Color.Red,0,Vector2.Zero,10,SpriteEffects.None,0);
-                sprite.Draw(textures[2], point, Color.Red);
+                List<Vector2> edge = Interpolate(hitbox.points[i], hitbox.points[i+1]);
+                foreach(Vector2 point in edge)
+                {
+                    sprite.Draw(textures[2], point, null,Color.Red,0,Vector2.Zero,scale,SpriteEffects.None,0);
+                    //sprite.Draw(textures[2], point, Color.Red);
+                }
+            }
+
+            List<Vector2> edge2 = Interpolate(hitbox.points[hitbox.points.Count-1], hitbox.points[0]);
+            foreach (Vector2 point in edge2)
+            {
+                sprite.Draw(textures[2], point, null, Color.Red, 0, Vector2.Zero, scale, SpriteEffects.None, 0);
+                //sprite.Draw(textures[2], point, Color.Red);
             }
         }
     }
