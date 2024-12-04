@@ -26,6 +26,7 @@ namespace samochod
         }
         public override void Draw(SpriteBatch spriteBatch)
         {
+            DrawHitbox(spriteBatch);
             if (texture != null)
             {
                 spriteBatch.Draw(texture, position, textureBoundry, Color.White, rotation, origin, scale, SpriteEffects.None, 0f);

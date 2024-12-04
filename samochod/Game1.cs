@@ -47,7 +47,7 @@ namespace samochod
             textures.Add(Content.Load<Texture2D>("Sprites/steering_wheel"));
             textures.Add(new Texture2D(GraphicsDevice, 1, 1));
             textures[2].SetData(new Color[] { Color.White });
-
+            Entity.textures = textures;
             // load entity manager
             entityManager = new EntityManager(textures);
             entityManager.text = text;
