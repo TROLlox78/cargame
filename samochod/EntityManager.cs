@@ -65,6 +65,14 @@ namespace samochod
             tmpObj.ID = globalID++;
             entities.Add(tmpObj);
         }
+        public void AddCar(EntityType model, Vector2 position )
+        {
+
+            Entity tmpObj = entityPool[model].Clone() as Car;
+            tmpObj.position = position;
+            tmpObj.ID = globalID++;
+            entities.Add(tmpObj);
+        }
         public void Update(GameTime gameTime)
         {
             foreach (var entity in entities) 

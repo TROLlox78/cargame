@@ -97,15 +97,7 @@ namespace samochod
 
         public override void Draw(SpriteBatch spriteBatch)
         {
-            if (texture != null)
-            {
-                spriteBatch.Draw(texture, position, textureBoundry, Color.White, rotation, origin, scale, SpriteEffects.None, 0f);
-            }
-            else
-            {
-                Debug.WriteLine("Entity: {0} has no texture", ID);
-            }
-            DrawHitbox(spriteBatch);
+            base.Draw(spriteBatch);
         }
 
     }

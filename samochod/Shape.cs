@@ -14,12 +14,11 @@ namespace samochod
     {
         public class Edge
         {
-            public Vector2 x, y;
-            public Edge() { }
+            public Vector2 p1, p2;
             public Edge (Vector2 x, Vector2 y)
             {
-                this.x = x;
-                this.y = y;
+                this.p1 = x;
+                this.p2 = y;
             }
         }
         // points have to be added in a clockwise manner
@@ -78,18 +77,22 @@ namespace samochod
 
         public bool lineIntersect(Edge e1, Edge e2)
         {
+            ///
+            /// algorithm taken from: https://paulbourke.net/geometry/pointlineplane/
+            /// 
+
             // edge 1 line points
-            float x1 = e1.x.X;
-            float y1 = e1.x.Y;
+            float x1 = e1.p1.X;
+            float y1 = e1.p1.Y;
 
-            float x2 = e1.y.X;
-            float y2 = e1.y.Y;
+            float x2 = e1.p2.X;
+            float y2 = e1.p2.Y;
              // edge 2 line points
-            float x3 = e2.x.X;
-            float y3 = e2.x.Y;
+            float x3 = e2.p1.X;
+            float y3 = e2.p1.Y;
 
-            float x4 = e2.y.X;
-            float y4 = e2.y.Y;
+            float x4 = e2.p2.X;
+            float y4 = e2.p2.Y;
 
             float denominator = ((y4 - y3) * (x2 - x1) - (x4 - x3) * (y2 - y1));
             if (denominator == 0) { return false; }

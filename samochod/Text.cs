@@ -17,7 +17,7 @@ namespace samochod
         private static int x = 10, y = 900;
         public static void reset()
         {
-            x = 10; y = 900;
+            x = 10; y = 800;
         }
         public Text(Vector2 pos, string text)
         {

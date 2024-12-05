@@ -17,7 +17,6 @@ namespace samochod
         public int ID;
         public bool alive = true;
         public bool mouseable = true;
-        Vector2 p2;
         public Vector2 position, 
             origin, // offset to the center of the texture from it's top left corner
             offset; // center of mass offset
@@ -37,14 +36,13 @@ namespace samochod
         {
             this.texture = texture;
             width = texture.Width; height = texture.Height;
-            scale = 1;// READ FROM LEVEL
+            scale = 1;// READ FROM LEVEL    
         }
         public virtual void UpdateMouse() 
         {
             if (!mouseable) { return; }
             if (Input.IsLeftPressed())
             {
-                p2 = toVect(Input.mousePosition);
                 if (width>= DistanceTo(Input.mousePosition))
                 {
                     position = toVect(Input.mousePosition);

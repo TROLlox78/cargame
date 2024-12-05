@@ -17,6 +17,7 @@ namespace samochod
         // maybe create a texture manager but, not useful for small game
         List<Texture2D> textures;
         // temp
+        Level tempLevel;
 
         public Game1()
         {
@@ -29,13 +30,14 @@ namespace samochod
         {
             _graphics.IsFullScreen = false;
             _graphics.PreferredBackBufferWidth = 1280;
-            _graphics.PreferredBackBufferHeight = 1024;
+            _graphics.PreferredBackBufferHeight = 896;
             _graphics.ApplyChanges();
             textures = new List<Texture2D>();
             text = new TextManager();
             text.blazed = Content.Load<SpriteFont>("Fonts/blazed");
             text.fipps  = Content.Load<SpriteFont>("Fonts/fipps");
             sw = new Stopwatch();
+            tempLevel = new Level();
             base.Initialize();
         }
 
@@ -47,12 +49,15 @@ namespace samochod
             textures.Add(Content.Load<Texture2D>("Sprites/steering_wheel"));
             textures.Add(new Texture2D(GraphicsDevice, 1, 1));
             textures[2].SetData(new Color[] { Color.White });
+            textures.Add(Content.Load<Texture2D>("Tiles/tileset"));
             Entity.textures = textures;
             // load entity manager
             entityManager = new EntityManager(textures);
             entityManager.text = text;
+            Level.tileSet = textures[3];
             // temp adding car
             entityManager.AddCar(EntityType.car);
+            entityManager.AddCar(EntityType.car, new Vector2(300, 300));
             entityManager.AddPlayer();
         }
 
@@ -100,9 +105,11 @@ namespace samochod
         {
             GraphicsDevice.Clear(Color.CornflowerBlue);
             _spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.PointClamp, null, null, null, null);
-
+            
+            tempLevel.Draw(_spriteBatch);
             entityManager.Draw(_spriteBatch);
             text.Draw(_spriteBatch);
+
             _spriteBatch.End();
             base.Draw(gameTime);
         }

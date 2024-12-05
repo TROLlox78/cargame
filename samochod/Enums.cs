@@ -12,5 +12,16 @@ namespace samochod
         car,
         steeringWheel,
     }
+    public enum TileID
+    {
+        sCurbManhole,
+        sEmpty,
+        sTwoLinesH,
+        sTwoLinesV,
+        sBend,
+        sYellowV,
+        sYellowH,
+        
+    }
 
 }
