@@ -17,8 +17,8 @@ namespace samochod
         public const int tileScale = 2;
         public Texture2D tileMapTexture;
         
-        public int mapWidth  = 40;
-        public int mapHeight = 32;
+        public const int mapWidth  = 1280 / (tileSize*tileScale);
+        public const int mapHeight = 896 / (tileSize*tileScale);
         static public Texture2D tileSet;
         // entityList
         // collisionZones
@@ -29,8 +29,14 @@ namespace samochod
                 tilePosition = new Dictionary<TileID, Point> {
                     {TileID.sCurbManhole,new Point(16,608) },
                     {TileID.sEmpty,new Point(48,608) },
+                    {TileID.sYellowH,new Point(48,640) },
                 };
             }
+
+            tileMap = new List<Tile> 
+            {
+                    
+            };
         }
 
         public Rectangle GetTile(TileID ID)
@@ -56,9 +62,12 @@ namespace samochod
 
                     for (int i = 0; i < mapWidth; i++)
                     {
-                        position.X = i * tileSize * scale;
-                        spritebatch.Draw(tileSet, position, GetTile(TileID.sEmpty), Color.White,
-                            0, Vector2.Zero, scale, SpriteEffects.None, 0f);
+                        if (i + j * 32 < 896)
+                        {
+                            position.X = i * tileSize * scale;
+                            spritebatch.Draw(tileSet, position, GetTile(tileMap[i + j * 32].ID), Color.White,
+                                0, Vector2.Zero, scale, SpriteEffects.None, 0f);
+                        }
                     }
                 }
             }
