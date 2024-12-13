@@ -17,7 +17,7 @@ namespace samochod
         // maybe create a texture manager but, not useful for small game
         List<Texture2D> textures;
         // temp
-        Level tempLevel;
+        LevelManager levelManager;
 
         public Game1()
         {
@@ -37,7 +37,7 @@ namespace samochod
             text.blazed = Content.Load<SpriteFont>("Fonts/blazed");
             text.fipps  = Content.Load<SpriteFont>("Fonts/fipps");
             sw = new Stopwatch();
-            tempLevel = new Level();
+            levelManager = new ();
             base.Initialize();
         }
 
@@ -54,7 +54,7 @@ namespace samochod
             // load entity manager
             entityManager = new EntityManager(textures);
             entityManager.text = text;
-            Level.tileSet = textures[3];
+            LevelManager.tileSet = textures[3];
             // temp adding car
             entityManager.AddCar(EntityType.car);
             entityManager.AddCar(EntityType.car, new Vector2(300, 300));
@@ -90,8 +90,8 @@ namespace samochod
                     Debug.WriteLine("point {0} x:{1} y:{2}", i, x[i].X, x[i].Y);
                 
             }
-            
 
+            levelManager.Update(gameTime);
             entityManager.Update(gameTime);
 
             if (sw.ElapsedMilliseconds > 1000) {
@@ -106,7 +106,7 @@ namespace samochod
             GraphicsDevice.Clear(Color.CornflowerBlue);
             _spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.PointClamp, null, null, null, null);
             
-            tempLevel.Draw(_spriteBatch);
+            levelManager.Draw(_spriteBatch);
             entityManager.Draw(_spriteBatch);
             text.Draw(_spriteBatch);
 

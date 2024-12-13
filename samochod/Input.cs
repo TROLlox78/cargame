@@ -8,10 +8,10 @@ namespace samochod
     {
         public static class Input
         {
-            public static KeyboardState previousKeyboard;
-            public static KeyboardState currentKeyboard;
-            public static MouseState previousMouse;
-            public static MouseState currentMouse;
+            private static KeyboardState previousKeyboard;
+            private static KeyboardState currentKeyboard;
+            private static MouseState previousMouse;
+            private static MouseState currentMouse;
             public static Point mousePosition;
 
             // player input

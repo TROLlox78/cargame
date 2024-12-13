@@ -2,25 +2,24 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace samochod
 {
     public class Tile
     {
-        public TileID ID;
-        public float orientation=0;
-        public byte special=0;
+        public TileID ID {  get; set; }
+        public byte flags { get; set; }
+        // 0,1  rotation
+        // 2    horizontal mirror
+        // 3    vertical mirror
 
-        public Tile(TileID tileID)
+        [JsonConstructor] // DO NOT MODIFY FREELY https://learn.microsoft.com/en-us/dotnet/standard/serialization/system-text-json/immutability
+        public Tile(TileID ID, byte flags)
         {
-            ID= tileID;
-        }
-        public Tile(TileID tileID, float orientation, byte special)
-        {
-            ID = tileID;
-            this.orientation = orientation;
-            this.special = special;
+            this.ID = ID;
+            this.flags = flags;
         }
     }
 }
