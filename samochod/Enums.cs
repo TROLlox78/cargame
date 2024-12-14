@@ -17,16 +17,13 @@ namespace samochod
         // street markings
         sCurbManhole = 0,
         sEmpty,
-        sTwoLinesH,
-        sTwoLinesV,
+        sTwoLines,
         sBend,
-        sYellowV,
-        sYellowH,
-        sStripSideR,
+        sYellow,
+        sStripSide,
         sDoubleStripSide,
-        sStripSideL,
         sManhole,
-        sdoubleLane,
+        sDoubleLane,
         sStraigthLine,
         
         // sidewalk, p for pavement

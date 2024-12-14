@@ -13,10 +13,11 @@ namespace samochod
     public class LevelManager
     {
         // for editor
-        private static int ID_selector = 22;
+        private static int ID_selector = 0;//22;
         private Tile previewTile = new((TileID)ID_selector, 0);
         private Vector2 previewPos;
         // 
+        public static TextManager txt;
 
         public Texture2D tileMapTexture; // only implement if perfomance bad or levels done 
         public Level currentLevel;
@@ -25,6 +26,7 @@ namespace samochod
         private static Dictionary<TileID, Point> tileDic; // using Point because int, never float
         public static Texture2D tileSet;
         public static int tileSize = 16;
+        public static Vector2 origin = new Vector2(tileSize/2, tileSize / 2);
         public static int tileScale = 2;
         public static int mapWidth = 1280 / (tileSize * tileScale);
         public static int mapHeight = 896 / (tileSize * tileScale);
@@ -36,7 +38,16 @@ namespace samochod
                 tileDic = new Dictionary<TileID, Point> {
                     {TileID.sCurbManhole,new Point(16,608) },
                     {TileID.sEmpty,new Point(48,608) },
-                    {TileID.sYellowH,new Point(48,640) },
+
+                    {TileID.sTwoLines,new Point(80,608) },
+                    {TileID.sBend,new Point(144,608) },
+                    {TileID.sYellow,new Point(16,640) },
+                    {TileID.sStripSide,new Point(80,640) },
+                    {TileID.sDoubleStripSide,new Point(112,640) },
+                    {TileID.sManhole,new Point(16,672) },
+                    {TileID.sDoubleLane,new Point(48,672) },
+                    {TileID.sStraigthLine,new Point(80,672) },
+
                     {TileID.pEmpty,new Point(336,640) },
                 };
             }
@@ -94,15 +105,47 @@ namespace samochod
         }
         public void Update(GameTime gameTime)
         {
+            // Update mouse. snap preview to nearest tile
+            int snapX = Input.mousePosition.X / (tileScale * tileSize) * (tileScale * tileSize);
+            int snapY = Input.mousePosition.Y / (tileScale * tileSize) * (tileScale * tileSize);
+            previewPos = new Vector2(snapX + origin.X * tileScale, snapY + origin.Y * tileScale);
             if (Input.IsKeyDown(Keys.LeftControl) && Input.IsKeyPressed(Keys.S))
             {
                 SaveData();
             }
+            if (Input.IsKeyPressed(Keys.OemPeriod))
+            {
+                Debug.WriteLine("key oem period");
+                ID_selector = ++ID_selector % (tileDic.Count-1);
+                previewTile = new((TileID)ID_selector, 0);
 
-            // snap preview to nearest tile
-            int snapX = Input.mousePosition.X/(tileScale*tileSize)    * (tileScale*tileSize);
-            int snapY = Input.mousePosition.Y/ (tileScale * tileSize) * (tileScale * tileSize);
-            previewPos = new Vector2(snapX, snapY);
+    }
+            if (Input.IsKeyPressed(Keys.OemComma))
+            {
+                Debug.WriteLine("key less");
+                ID_selector = --ID_selector % tileDic.Count;
+                previewTile = new((TileID)ID_selector, 0);
+            }
+            if (Input.IsKeyPressed(Keys.R)) 
+            {
+                // TODO: FIX THIS, ONLY 2 BITS FOR ROTATION
+                //byte rot = (byte)(previewTile.flags & 0b0000_0011);
+                //previewTile.flags = (byte)(previewTile.flags | (++rot & 0b0000_0011));
+                previewTile.flags++;
+            }
+            if (Input.IsLeftClicked())
+            {
+                int idx_X = snapX / (tileScale * tileSize);
+                int idx_Y = snapY / (tileScale * tileSize);
+                currentLevel.tileMap[idx_X + idx_Y * mapWidth] = new Tile(
+                    previewTile.ID, previewTile.flags);
+                Debug.WriteLine($"idx x:{idx_X}, y:{idx_Y}");
+            }
+            if (Input.IsKeyPressed(Keys.K))
+            {
+                Debug.WriteLine($"map size {currentLevel.tileMap.Count}");
+            }
+
 
         }
         public void Draw(SpriteBatch spritebatch)
@@ -113,22 +156,24 @@ namespace samochod
             {
                 for (int j = 0; j < mapHeight; j++)
                 {
-                    position.Y = j * scale * tileSize;
-                    position.X = 0;
+                    position.Y = (j * tileSize + origin.Y)*scale;
 
                     for (int i = 0; i < mapWidth; i++)
                     {
-                        var tile = currentLevel.tileMap[i + j * mapHeight];
-                        position.X = i * tileSize * scale;
-                        spritebatch.Draw(tileSet, position, GetTile(tile.ID), Color.White,
-                            tile.flags, Vector2.Zero, scale, SpriteEffects.None, 0f);
+                        position.X = (i * tileSize + origin.X)*scale;
+                        var tile = currentLevel.tileMap[i + j * mapWidth];
+                        float rotation = (tile.flags & 0b0000_0011) * (float)Math.PI/2;
                         
+                        spritebatch.Draw(tileSet, position, GetTile(tile.ID), Color.White,
+                            rotation, origin, scale, SpriteEffects.None, 0f);
+                        //txt.Write(new Text(position- origin, $"{i + j * mapWidth}", 0.6f));
                     }
                 }
             }
             // draw preview tile
+            float previewRot = (previewTile.flags & 0b0000_0011) * (float)Math.PI / 2;
             spritebatch.Draw(tileSet, previewPos, GetTile(previewTile.ID), Color.White,
-                previewTile.flags, Vector2.Zero, scale, SpriteEffects.None, 0f);
+                previewRot, origin, scale, SpriteEffects.None, 0f);
             
         }
     }

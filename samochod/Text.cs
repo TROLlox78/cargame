@@ -13,6 +13,7 @@ namespace samochod
     {
         public Vector2 position;
         public string text;
+        public float scale = 1;
         public Color color = Color.Black;
         private static int x = 10, y = 900;
         public static void reset()
@@ -23,6 +24,12 @@ namespace samochod
         {
             position = pos;
             this.text = text;
+        }
+        public Text(Vector2 pos, string text, float scale)
+        {
+            position = pos;
+            this.text = text;
+            this.scale = scale;
         }
         public Text( string text)
         {
@@ -48,7 +55,8 @@ namespace samochod
         {
             foreach (Text text in texts)
             {
-                spriteBatch.DrawString(fipps, text.text, text.position, text.color);
+                spriteBatch.DrawString(fipps, text.text, text.position, text.color,
+                    0,Vector2.Zero,text.scale,SpriteEffects.None,0f);
             }
             texts.Clear();
             Text.reset();

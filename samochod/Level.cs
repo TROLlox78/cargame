@@ -16,6 +16,7 @@ namespace samochod
         public List<Tile> tileMap {  get; set; }
         // entityList
         // collisionZones
+        // winZone
 
         public Level() {
 

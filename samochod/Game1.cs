@@ -55,6 +55,7 @@ namespace samochod
             entityManager = new EntityManager(textures);
             entityManager.text = text;
             LevelManager.tileSet = textures[3];
+            LevelManager.txt = text;
             // temp adding car
             entityManager.AddCar(EntityType.car);
             entityManager.AddCar(EntityType.car, new Vector2(300, 300));
@@ -78,7 +79,7 @@ namespace samochod
 
             }
 
-            if (Input.IsKeyDown(Keys.R))
+            if (Input.IsKeyDown(Keys.P))
             {
                 if (entityManager.player != null)
                 entityManager.player.alive = false;
