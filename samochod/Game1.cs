@@ -68,7 +68,7 @@ namespace samochod
             Input.Update(Mouse.GetState(), Keyboard.GetState());
             text.Write(new Text(string.Format("mX: {0} mY: {1}", Input.mousePosition.X, Input.mousePosition.Y)));
             text.Write(new Text(string.Format("pX: {0} pY: {1}", entityManager.player.position.X, entityManager.player.position.Y)));
-            text.Write(new Text(string.Format("pX: {0} pY: {1}", entityManager.entities[0].position.X, entityManager.entities[0].position.Y)));
+            //text.Write(new Text(string.Format("pX: {0} pY: {1}", entityManager.entities[0].position.X, entityManager.entities[0].position.Y)));
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Input.IsKeyDown(Keys.Escape))
                 Exit();
 

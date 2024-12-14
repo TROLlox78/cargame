@@ -16,6 +16,7 @@ namespace samochod
         private static int ID_selector = 0;//22;
         private Tile previewTile = new((TileID)ID_selector, 0);
         private Vector2 previewPos;
+        private string ActionType = "none";
         // 
         public static TextManager txt;
 
@@ -45,10 +46,26 @@ namespace samochod
                     {TileID.sStripSide,new Point(80,640) },
                     {TileID.sDoubleStripSide,new Point(112,640) },
                     {TileID.sManhole,new Point(16,672) },
-                    {TileID.sDoubleLane,new Point(48,672) },
+                    {TileID.sCrossing,new Point(48,672) },
                     {TileID.sStraigthLine,new Point(80,672) },
-
+                    // pavement
+                    {TileID.pTopCorner,new Point(208,608) },
+                    {TileID.pTop1,new Point(240,608) },
+                    {TileID.pTop2,new Point(272,608) },
+                    {TileID.pBalls,new Point(336,608) },
+                    {TileID.pLeftSide,new Point(208,640) },
+                    {TileID.pTopShaded,new Point(240,640) },
+                    {TileID.pBottomShaded,new Point(272,640) },
+                    {TileID.pRightSide,new Point(304,640) },
                     {TileID.pEmpty,new Point(336,640) },
+                    {TileID.pLeftSide2,new Point(208,672) },
+                    {TileID.pLeftShaded,new Point(240,672) },
+                    {TileID.pRightShaded,new Point(272,672) },
+                    {TileID.pRightSide2,new Point(304,672) },
+                    {TileID.pEmpty2,new Point(336,672) },
+                    {TileID.pBottomCorner,new Point(208,704) },
+                    {TileID.pBottom1,new Point(240,704) },
+                    {TileID.pBottom2,new Point(272,704) },
                 };
             }
             #endregion
@@ -113,18 +130,26 @@ namespace samochod
             {
                 SaveData();
             }
+            if (Input.IsKeyPressed(Keys.M))
+            {
+                // switch action type
+            }
             if (Input.IsKeyPressed(Keys.OemPeriod))
             {
                 Debug.WriteLine("key oem period");
                 ID_selector = ++ID_selector % (tileDic.Count-1);
                 previewTile = new((TileID)ID_selector, 0);
+                ActionType = $"Placing: {((TileID)ID_selector)}";
 
     }
             if (Input.IsKeyPressed(Keys.OemComma))
             {
                 Debug.WriteLine("key less");
-                ID_selector = --ID_selector % tileDic.Count;
+                int len = tileDic.Count ;
+                ID_selector = (--ID_selector% len + len) % len; // tilecount - (tilecount -id)
                 previewTile = new((TileID)ID_selector, 0);
+                ActionType = $"Placing: {((TileID)ID_selector)}";
+
             }
             if (Input.IsKeyPressed(Keys.R)) 
             {
@@ -146,7 +171,7 @@ namespace samochod
                 Debug.WriteLine($"map size {currentLevel.tileMap.Count}");
             }
 
-
+            txt.Write(new Text( ActionType));
         }
         public void Draw(SpriteBatch spritebatch)
         {

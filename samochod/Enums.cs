@@ -23,14 +23,13 @@ namespace samochod
         sStripSide,
         sDoubleStripSide,
         sManhole,
-        sDoubleLane,
+        sCrossing,
         sStraigthLine,
         
         // sidewalk, p for pavement
-        pTopLeft,
+        pTopCorner,
         pTop1,
         pTop2,
-        pTopRight,
         pBalls,
         pLeftSide,
         pTopShaded,
@@ -42,10 +41,9 @@ namespace samochod
         pRightShaded,
         pRightSide2,
         pEmpty2,
-        pBottomLeft,
+        pBottomCorner,
         pBottom1,
         pBottom2,
-        pBottomRight,
     }
 
 }
