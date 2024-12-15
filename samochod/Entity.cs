@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
 using samochod.monogame_test;
 using System;
 using System.Collections.Generic;
@@ -15,13 +16,14 @@ namespace samochod
     public class Entity
     {
         public int ID;
+        public EntityType EntityType;
         public bool alive = true;
         public bool mouseable = true;
-        public Vector2 position, 
-            origin, // offset to the center of the texture from it's top left corner
-            offset; // center of mass offset
-        public float rotation;
-        public float scale;
+        public Vector2 position {  get; set; }
+        public Vector2 origin; // offset to the center of the texture from it's top left corner
+        public Vector2 offset; // center of mass offset
+        public float rotation {  get; set; }
+        public float scale=1;
 
         public static List<Texture2D> textures;
         protected Texture2D texture;
@@ -32,25 +34,33 @@ namespace samochod
             { return new Shape(position, offset, scale, rotation, textureBoundry);  }
                 
                 }
-        public Entity(Texture2D texture)
+        //public Entity(Texture2D texture)
+        //{
+        //    this.texture = textures[0];
+        //    width = texture.Width; height = texture.Height;
+        //    scale = 1;// READ FROM LEVEL    
+        //}
+        public Entity()
         {
-            this.texture = texture;
-            width = texture.Width; height = texture.Height;
-            scale = 1;// READ FROM LEVEL    
+        
         }
         public virtual void UpdateMouse() 
         {
             if (!mouseable) { return; }
-            if (Input.IsLeftPressed())
+            if (width >= DistanceTo(Input.mousePosition))
             {
-                if (width>= DistanceTo(Input.mousePosition))
+                if (Input.IsLeftPressed())
                 {
                     position = toVect(Input.mousePosition);
                 }
-            }
-            if (Input.IsRightPressed())
-            {
-                rotation += 0.1f;
+                if (Input.IsRightPressed())
+                {
+                    rotation += 0.1f;
+                }
+                if (Input.IsKeyPressed(Keys.Delete))
+                {
+                    alive = false;
+                }
             }
         }
         public virtual void Update(GameTime gameTime)

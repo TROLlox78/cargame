@@ -22,7 +22,7 @@ namespace samochod
         float friction;
         float direction = 1;
         float wheelRotation = 0;
-        public Player(Texture2D texture) : base(texture){}
+        public Player() :base() { init(); } 
         public void init()
         {
             velocity = new Vector2();

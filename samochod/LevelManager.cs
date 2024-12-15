@@ -13,8 +13,8 @@ namespace samochod
     public class LevelManager
     {
         // for editor
-        private static int ID_selector = 0;//22;
-        private Tile previewTile = new((TileID)ID_selector, 0);
+        private static int tileSelector = 0;
+        private Tile previewTile = new((TileID)tileSelector, 0);
         private Vector2 previewPos;
         private string ActionType = "none";
         // 
@@ -69,7 +69,6 @@ namespace samochod
                 };
             }
             #endregion
-            LoadLevel(0);
         }
         public void LoadLevel(int levelID)
         {
@@ -93,7 +92,7 @@ namespace samochod
         }
         private void LoadData(int levelID)
         {
-            string file = $"level{levelID}.data";
+            string file = $"lvl\\level{levelID}.data";
             this.levelID = levelID;
             // load map data from file
 
@@ -104,12 +103,26 @@ namespace samochod
             }
             else
             {
-                throw new Exception("Couldn't load level data, file not found.");
+                //throw new Exception("Couldn't load level data, file not found.");
+                makeLevel();
+            }
+        }
+        private void MakeHelpers()
+        {
+            currentLevel.entities.Clear();
+            foreach ( var e in EntityManager.entities)
+            {
+                if (e is Car)
+                {
+                    currentLevel.entities.Add(new EntityHelper(EntityType.car,e.position.X,
+                        e.position.Y,e.rotation,((Car)e).model));
+                }
             }
         }
         public void SaveData()
         {
-            string file = $"level{levelID}.data";
+            MakeHelpers();
+            string file = $"lvl\\level{levelID}.data";
             byte[] bytes = JsonSerializer.SerializeToUtf8Bytes(currentLevel);
             File.WriteAllBytes(file, bytes);
             Debug.WriteLine($"{file} saved");
@@ -122,6 +135,7 @@ namespace samochod
         }
         public void Update(GameTime gameTime)
         {
+            
             // Update mouse. snap preview to nearest tile
             int snapX = Input.mousePosition.X / (tileScale * tileSize) * (tileScale * tileSize);
             int snapY = Input.mousePosition.Y / (tileScale * tileSize) * (tileScale * tileSize);
@@ -137,18 +151,18 @@ namespace samochod
             if (Input.IsKeyPressed(Keys.OemPeriod))
             {
                 Debug.WriteLine("key oem period");
-                ID_selector = ++ID_selector % (tileDic.Count-1);
-                previewTile = new((TileID)ID_selector, 0);
-                ActionType = $"Placing: {((TileID)ID_selector)}";
+                tileSelector = ++tileSelector % (tileDic.Count-1);
+                previewTile = new((TileID)tileSelector, 0);
+                ActionType = $"Placing: {((TileID)tileSelector)}";
 
     }
             if (Input.IsKeyPressed(Keys.OemComma))
             {
                 Debug.WriteLine("key less");
                 int len = tileDic.Count ;
-                ID_selector = (--ID_selector% len + len) % len; // tilecount - (tilecount -id)
-                previewTile = new((TileID)ID_selector, 0);
-                ActionType = $"Placing: {((TileID)ID_selector)}";
+                tileSelector = (--tileSelector% len + len) % len; // tilecount - (tilecount -id)
+                previewTile = new((TileID)tileSelector, 0);
+                ActionType = $"Placing: {((TileID)tileSelector)}";
 
             }
             if (Input.IsKeyPressed(Keys.R)) 
@@ -158,7 +172,7 @@ namespace samochod
                 //previewTile.flags = (byte)(previewTile.flags | (++rot & 0b0000_0011));
                 previewTile.flags++;
             }
-            if (Input.IsLeftClicked())
+            if (Input.IsLeftClicked() && Input.mouseInBounds)
             {
                 int idx_X = snapX / (tileScale * tileSize);
                 int idx_Y = snapY / (tileScale * tileSize);

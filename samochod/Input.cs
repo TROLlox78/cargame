@@ -13,7 +13,7 @@ namespace samochod
             private static MouseState previousMouse;
             private static MouseState currentMouse;
             public static Point mousePosition;
-
+            public static bool mouseInBounds;
             // player input
             public static bool steerLeft;
             public static bool steerRight;
@@ -58,7 +58,8 @@ namespace samochod
                 previousMouse = currentMouse;
                 currentMouse = mouse;
                 mousePosition = mouse.Position;
-
+                mouseInBounds = mouse.Position.X > 0 && mouse.Position.Y > 0 && 
+                    mouse.Position.X < Game1.ResX && mouse.Position.Y < Game1.ResY;
                 UpdatePlayer();
             }
 

@@ -9,6 +9,8 @@ namespace samochod
 {
     public class Game1 : Game
     {
+        public static int ResX = 1280;
+        public static int ResY = 896;
         private GraphicsDeviceManager _graphics;
         private SpriteBatch _spriteBatch;
         private EntityManager entityManager;
@@ -29,8 +31,8 @@ namespace samochod
         protected override void Initialize()
         {
             _graphics.IsFullScreen = false;
-            _graphics.PreferredBackBufferWidth = 1280;
-            _graphics.PreferredBackBufferHeight = 896;
+            _graphics.PreferredBackBufferWidth = ResX;
+            _graphics.PreferredBackBufferHeight = ResY;
             _graphics.ApplyChanges();
             textures = new List<Texture2D>();
             text = new TextManager();
@@ -51,14 +53,16 @@ namespace samochod
             textures[2].SetData(new Color[] { Color.White });
             textures.Add(Content.Load<Texture2D>("Tiles/tileset"));
             Entity.textures = textures;
+            levelManager.LoadLevel(levelID:0);
             // load entity manager
-            entityManager = new EntityManager(textures);
+            entityManager = new EntityManager();
             entityManager.text = text;
+            entityManager.EntityMachen( levelManager.currentLevel.entities);
             LevelManager.tileSet = textures[3];
             LevelManager.txt = text;
             // temp adding car
-            entityManager.AddCar(EntityType.car);
-            entityManager.AddCar(EntityType.car, new Vector2(300, 300));
+            //entityManager.AddCar(EntityType.car);
+            //entityManager.AddCar(EntityType.car, new Vector2(300, 300));
             entityManager.AddPlayer();
         }
 

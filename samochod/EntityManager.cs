@@ -13,10 +13,9 @@ namespace samochod
     public class EntityManager
     {
         // list of all spawned entities
-        public List<Entity> entities;
+        public static List<Entity> entities;
         // pool of available models to use
         public Dictionary<EntityType, Entity> entityPool;
-        List<Texture2D> textures;
         public Player player;
         public TextManager text;
         private int globalID = 0;
@@ -31,21 +30,31 @@ namespace samochod
         {
             entityPool = new Dictionary<EntityType, Entity>()
             {
-                { EntityType.car, new Car(textures[0] ) },
-                { EntityType.player, new Player(textures[0] ) },
+                { EntityType.car, new Car() },
+                { EntityType.player, new Player() },
                 //{ EntityType.steeringWheel, new Entity(textures[1] ) },
             };
             
         }
-        public EntityManager(List<Texture2D> textures) 
+        public EntityManager() 
         {
-            this.textures = textures;
             initEntityManager();
             initResources(); 
         }
-
-        public void AddEntity(EntityType entityType) 
+        public void EntityMachen(List<EntityHelper> helpers)
         {
+            foreach (var helper in helpers)
+            {
+                switch (helper.type)
+                {
+                    case EntityType.car:
+                        AddCar(helper); break;
+                }
+            }
+        }
+        public void AddEntity(Entity e) 
+        {
+            entities.Add(e);
             Debug.WriteLine("IDg");
 
         }
@@ -60,8 +69,13 @@ namespace samochod
         }
         public void AddCar(EntityType model )
         {
-
             Entity tmpObj = entityPool[model].Clone() as Car;
+            tmpObj.ID = globalID++;
+            entities.Add(tmpObj);
+        }
+        public void AddCar(EntityHelper h)
+        {
+            Car tmpObj = new Car(h.model, new(h.px, h.py), h.rotation);
             tmpObj.ID = globalID++;
             entities.Add(tmpObj);
         }
@@ -98,6 +112,7 @@ namespace samochod
                 }
                 
             }
+            text.Write(new Text($"ent: {entities.Count}"));
             if (collided)
             {
                 text.Write(new Text("Player touching"));

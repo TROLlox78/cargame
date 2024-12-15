@@ -11,6 +11,7 @@ namespace samochod
         player,
         car,
         steeringWheel,
+        dummy,
     }
     public enum TileID
     {
@@ -44,6 +45,10 @@ namespace samochod
         pBottomCorner,
         pBottom1,
         pBottom2,
+    }
+    public enum Model
+    {
+        None = 0,
     }
 
 }
