@@ -26,6 +26,8 @@ namespace samochod
             //textureBoundry = new Rectangle(452,69, width, height);
             textureBoundry = models[Model.Player];
             position = new Vector2(100, 100);
+            width = models[carModel].Width;
+            height = models[carModel].Height;
             origin = new Vector2(width/2, height/2);
             Debug.WriteLine("created car model");
         }
@@ -79,6 +81,9 @@ namespace samochod
                     int t = (int)carModel;
                     carModel = (Model)(++t % models.Count);
                     textureBoundry = models[(Model)carModel];
+                    width = models[carModel].Width;
+                    height = models[carModel].Height;
+                    origin = new Vector2(width / 2, height / 2);
                 }
             }
         }

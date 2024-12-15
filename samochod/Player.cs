@@ -26,7 +26,7 @@ namespace samochod
 
         //temp
         int skin=0;
-        public Player() :base() { init(); } 
+        public Player() :base() {  } 
         public void init()
         {
             velocity = new Vector2();
@@ -54,7 +54,7 @@ namespace samochod
                 {
                     //int sign = wheelRotation > 0 ? 1 : -1; 
                     // subtract some amount speed from wheel
-                    wheelRotation /= 1.2f;
+                    wheelRotation /= 1.1f;
                 }
                 
                 if (speed < 0)
