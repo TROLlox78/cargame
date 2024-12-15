@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
 using samochod.monogame_test;
 using System;
 using System.Collections.Generic;
@@ -22,6 +23,9 @@ namespace samochod
         float friction;
         float direction = 1;
         float wheelRotation = 0;
+
+        //temp
+        int skin=0;
         public Player() :base() { init(); } 
         public void init()
         {
@@ -34,7 +38,10 @@ namespace samochod
         }
         public override void Update(GameTime gametime)
         {
-
+            if (Input.IsKeyPressed(Keys.C)) {
+                skin = ++skin % models.Count;
+                textureBoundry = models[(Model)skin];
+            }
 
             rotation %= 6.28f;
             if (speed != 0)
@@ -47,7 +54,7 @@ namespace samochod
                 {
                     //int sign = wheelRotation > 0 ? 1 : -1; 
                     // subtract some amount speed from wheel
-                    wheelRotation /= 1.1f;
+                    wheelRotation /= 1.2f;
                 }
                 
                 if (speed < 0)

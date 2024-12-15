@@ -48,7 +48,25 @@ namespace samochod
     }
     public enum Model
     {
-        None = 0,
+        Player,
+        Sports,
+        Muscle,
+        Luxury,
+        Limo,
+        Police,
+        Taxi,
+        Ambulance,
+        FireTruck,
+        Pickup,
+        Bones,
+        Sedan,
+        Transport,
+        Transport2,
+        Transport3,
+        Transport4,
+        Transport5,
+        Transport6,
+
     }
 
 }

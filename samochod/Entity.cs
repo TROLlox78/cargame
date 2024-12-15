@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Diagnostics;
 using System.Linq;
+using System.Reflection;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
@@ -61,6 +62,7 @@ namespace samochod
                 {
                     alive = false;
                 }
+                
             }
         }
         public virtual void Update(GameTime gameTime)

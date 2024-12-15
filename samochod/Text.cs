@@ -48,7 +48,7 @@ namespace samochod
             texts = new List<Text>();
         }
         public void Write(Text text)
-        {
+        {// don't pass a text object next time..
             texts.Add(text);
         }
         public void Draw(SpriteBatch spriteBatch)

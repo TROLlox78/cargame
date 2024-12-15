@@ -115,7 +115,7 @@ namespace samochod
                 if (e is Car)
                 {
                     currentLevel.entities.Add(new EntityHelper(EntityType.car,e.position.X,
-                        e.position.Y,e.rotation,((Car)e).model));
+                        e.position.Y,e.rotation,((Car)e).carModel));
                 }
             }
         }
