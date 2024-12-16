@@ -13,7 +13,6 @@ namespace samochod
         steeringWheel,
         dummy,
         collisionZone,
-        winZone,
     }
     public enum TileID
     {
