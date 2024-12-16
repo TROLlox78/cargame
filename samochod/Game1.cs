@@ -60,6 +60,7 @@ namespace samochod
             entityManager.EntityMachen( levelManager.currentLevel.entities);
             LevelManager.tileSet = textures[3];
             LevelManager.txt = text;
+            levelManager.entityManager = entityManager;
             // temp adding car
             //entityManager.AddCar(EntityType.car);
             //entityManager.AddCar(EntityType.car, new Vector2(300, 300));
