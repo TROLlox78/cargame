@@ -12,6 +12,8 @@ namespace samochod
         car,
         steeringWheel,
         dummy,
+        collisionZone,
+        winZone,
     }
     public enum TileID
     {
@@ -68,5 +70,13 @@ namespace samochod
         Transport6,
 
     }
+    public enum ActionType { 
+        None,Tile,
+        Car,
+        Entity,
+        CollisionZone,
+        WinZone,
+    }
+
 
 }

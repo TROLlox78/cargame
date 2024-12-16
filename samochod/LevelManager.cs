@@ -16,8 +16,14 @@ namespace samochod
         private static int tileSelector = 0;
         private Tile previewTile = new((TileID)tileSelector, 0);
         private Vector2 previewPos;
-        private string ActionType = "none";
-        // 
+        private ActionType actionType = ActionType.None;
+        private string actionStr;
+
+        private Rectangle zoneRect = new();
+        private bool drawing;
+        private Point zonePos;
+        public EntityManager entityManager;
+        // ediotr
         public static TextManager txt;
 
         public Texture2D tileMapTexture; // only implement if perfomance bad or levels done 
@@ -31,6 +37,7 @@ namespace samochod
         public static int tileScale = 2;
         public static int mapWidth = 1280 / (tileSize * tileScale);
         public static int mapHeight = 896 / (tileSize * tileScale);
+
         public LevelManager()
         {
             #region Init Tile Dic
@@ -135,57 +142,102 @@ namespace samochod
         }
         public void Update(GameTime gameTime)
         {
-            
-            // Update mouse. snap preview to nearest tile
-            int snapX = Input.mousePosition.X / (tileScale * tileSize) * (tileScale * tileSize);
-            int snapY = Input.mousePosition.Y / (tileScale * tileSize) * (tileScale * tileSize);
-            previewPos = new Vector2(snapX + origin.X * tileScale, snapY + origin.Y * tileScale);
-            if (Input.IsKeyDown(Keys.LeftControl) && Input.IsKeyPressed(Keys.S))
+            if  (actionType == ActionType.None)
             {
-                SaveData();
+                actionStr = "";
+            }
+            if (actionType == ActionType.Tile)
+            {
+                actionStr = $"Placing: {((TileID)tileSelector)}";
+
+                // Update mouse. snap preview to nearest tile
+                int snapX = Input.mousePosition.X / (tileScale * tileSize) * (tileScale * tileSize);
+                int snapY = Input.mousePosition.Y / (tileScale * tileSize) * (tileScale * tileSize);
+                previewPos = new Vector2(snapX + origin.X * tileScale, snapY + origin.Y * tileScale);
+                
+                if (Input.IsKeyPressed(Keys.OemPeriod))
+                {
+                    Debug.WriteLine("key oem period");
+                    tileSelector = ++tileSelector % (tileDic.Count - 1);
+                    previewTile = new((TileID)tileSelector, 0);
+
+                }
+                if (Input.IsKeyPressed(Keys.OemComma))
+                {
+                    Debug.WriteLine("key less");
+                    int len = tileDic.Count;
+                    tileSelector = (--tileSelector % len + len) % len; // tilecount - (tilecount -id)
+                    previewTile = new((TileID)tileSelector, 0);
+
+                }
+                if (Input.IsKeyPressed(Keys.R))
+                {
+                    // TODO: FIX THIS, ONLY 2 BITS FOR ROTATION
+                    //byte rot = (byte)(previewTile.flags & 0b0000_0011);
+                    //previewTile.flags = (byte)(previewTile.flags | (++rot & 0b0000_0011));
+                    previewTile.flags++;
+                }
+                if (Input.IsLeftClicked() && Input.mouseInBounds)
+                {
+                    int idx_X = snapX / (tileScale * tileSize);
+                    int idx_Y = snapY / (tileScale * tileSize);
+                    currentLevel.tileMap[idx_X + idx_Y * mapWidth] = new Tile(
+                        previewTile.ID, previewTile.flags);
+                    Debug.WriteLine($"idx x:{idx_X}, y:{idx_Y}");
+                }
+            }
+            if (actionType == ActionType.Car)
+            {
+                actionStr = "";
+                if (Input.mouseInBounds)
+                {
+                    if (Input.IsLeftClicked())
+                    {
+                        entityManager.AddCar(EntityType.car, Input.mousePosition.ToVector2());
+                    }
+                }
+            }
+            if (actionType == ActionType.Entity) {
+                actionStr = "";
+            }
+            if (actionType == ActionType.CollisionZone)
+            {
+                actionStr = "";
+
+                if (Input.mouseInBounds)
+                {
+                    if (Input.IsLeftClicked() && !drawing)
+                    {
+                        zoneRect = new();
+
+                        drawing = true;
+                        zonePos = Input.mousePosition;
+                    }
+                    else if (Input.IsLeftClicked() && drawing)
+                    {
+                        drawing = false;
+                        zoneRect = new(zonePos, new Point(Input.mousePosition.X- zonePos.X,
+                             Input.mousePosition.Y- zonePos.Y));
+                        entityManager.AddZone(zoneRect, EntityType.collisionZone);
+                    }
+                }
             }
             if (Input.IsKeyPressed(Keys.M))
             {
                 // switch action type
-            }
-            if (Input.IsKeyPressed(Keys.OemPeriod))
-            {
-                Debug.WriteLine("key oem period");
-                tileSelector = ++tileSelector % (tileDic.Count-1);
-                previewTile = new((TileID)tileSelector, 0);
-                ActionType = $"Placing: {((TileID)tileSelector)}";
-
-    }
-            if (Input.IsKeyPressed(Keys.OemComma))
-            {
-                Debug.WriteLine("key less");
-                int len = tileDic.Count ;
-                tileSelector = (--tileSelector% len + len) % len; // tilecount - (tilecount -id)
-                previewTile = new((TileID)tileSelector, 0);
-                ActionType = $"Placing: {((TileID)tileSelector)}";
-
-            }
-            if (Input.IsKeyPressed(Keys.R)) 
-            {
-                // TODO: FIX THIS, ONLY 2 BITS FOR ROTATION
-                //byte rot = (byte)(previewTile.flags & 0b0000_0011);
-                //previewTile.flags = (byte)(previewTile.flags | (++rot & 0b0000_0011));
-                previewTile.flags++;
-            }
-            if (Input.IsLeftClicked() && Input.mouseInBounds)
-            {
-                int idx_X = snapX / (tileScale * tileSize);
-                int idx_Y = snapY / (tileScale * tileSize);
-                currentLevel.tileMap[idx_X + idx_Y * mapWidth] = new Tile(
-                    previewTile.ID, previewTile.flags);
-                Debug.WriteLine($"idx x:{idx_X}, y:{idx_Y}");
-            }
-            if (Input.IsKeyPressed(Keys.K))
-            {
-                Debug.WriteLine($"map size {currentLevel.tileMap.Count}");
+                int temp = (int)actionType;
+                actionType = (ActionType)(++temp % Enum.GetValues(typeof(ActionType)).Length);
             }
 
-            txt.Write(new Text( ActionType));
+            if (Input.IsKeyDown(Keys.LeftControl) && Input.IsKeyPressed(Keys.S))
+            {
+                SaveData();
+            }
+            
+            
+
+
+            txt.Write(new Text( $"Action:{actionType.ToString()} {actionStr}"));
         }
         public void Draw(SpriteBatch spritebatch)
         {
@@ -210,9 +262,18 @@ namespace samochod
                 }
             }
             // draw preview tile
-            float previewRot = (previewTile.flags & 0b0000_0011) * (float)Math.PI / 2;
-            spritebatch.Draw(tileSet, previewPos, GetTile(previewTile.ID), Color.White,
-                previewRot, origin, scale, SpriteEffects.None, 0f);
+            if (actionType == ActionType.Tile)
+            {
+                float previewRot = (previewTile.flags & 0b0000_0011) * (float)Math.PI / 2;
+                spritebatch.Draw(tileSet, previewPos, GetTile(previewTile.ID), Color.White,
+                    previewRot, origin, scale, SpriteEffects.None, 0f);
+            }
+            if (actionType == ActionType.CollisionZone)
+            {
+                float previewRot = (previewTile.flags & 0b0000_0011) * (float)Math.PI / 2;
+                spritebatch.Draw(tileSet, zoneRect, GetTile(TileID.pEmpty2), Color.White,
+                    0, Vector2.Zero,  SpriteEffects.None, 0f);
+            }
             
         }
     }

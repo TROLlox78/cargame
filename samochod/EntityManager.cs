@@ -58,6 +58,10 @@ namespace samochod
             Debug.WriteLine("IDg");
 
         }
+        public void AddZone(Rectangle zoneRect, EntityType entity) 
+        {
+            Entity tmpObj = entityPool[entity].Clone() as  
+        }
         public Player AddPlayer()
         {
             player = entityPool[EntityType.player].Clone() as Player;
