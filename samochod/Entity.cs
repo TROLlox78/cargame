@@ -20,10 +20,10 @@ namespace samochod
         public EntityType EntityType;
         public bool alive = true;
         public bool mouseable = true;
-        public Vector2 position {  get; set; }
+        public Vector2 position;
         public Vector2 origin; // offset to the center of the texture from it's top left corner
         public Vector2 offset; // center of mass offset
-        public float rotation {  get; set; }
+        public float rotation;
         public float scale=1;
 
         public static List<Texture2D> textures;

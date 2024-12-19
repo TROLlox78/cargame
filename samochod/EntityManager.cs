@@ -14,6 +14,7 @@ namespace samochod
     {
         // list of all spawned entities
         public static List<Entity> entities;
+        public static List<Zone> zones;
         // pool of available models to use
         public Dictionary<EntityType, Entity> entityPool;
         public Player player;
@@ -22,7 +23,10 @@ namespace samochod
 
         public void initEntityManager()
         {
-            if (entities == null) { entities = new List<Entity>(); }
+            if (entities == null) { 
+                entities = new List<Entity>();
+                zones = new List<Zone>();
+            }
 
             else { entities.Clear(); }
         }
@@ -41,9 +45,10 @@ namespace samochod
             initEntityManager();
             initResources(); 
         }
-        public void EntityMachen(List<EntityHelper> helpers)
+        public void LevelMachen(Level lvl)
         {
-            foreach (var helper in helpers)
+            var ent = lvl.entities;
+            foreach (var helper in ent)
             {
                 switch (helper.type)
                 {
@@ -51,16 +56,24 @@ namespace samochod
                         AddCar(helper); break;
                 }
             }
+            foreach (var zon in lvl.zones)
+            {
+                AddZone(zon);
+            }
         }
         public void AddEntity(Entity e) 
         {
             entities.Add(e);
-            Debug.WriteLine("IDg");
+            Debug.WriteLine("non do AddEntity");
 
         }
-        public void AddZone(Rectangle zoneRect, EntityType entity) 
+        public void AddZone(Zone obj) 
         {
-            Entity tmpObj = entityPool[entity].Clone() as  
+            zones.Add(obj);
+        }
+        public void AddZone(ZoneTranslator obj)
+        {
+            zones.Add(new Zone(obj.type,obj.px,obj.py,obj.Width,obj.Height));
         }
         public Player AddPlayer()
         {
@@ -77,7 +90,7 @@ namespace samochod
             tmpObj.ID = globalID++;
             entities.Add(tmpObj);
         }
-        public void AddCar(EntityHelper h)
+        public void AddCar(EntityTranslator h)
         {
             Car tmpObj = new Car(h.model, new(h.px, h.py), h.rotation);
             tmpObj.ID = globalID++;
@@ -129,9 +142,13 @@ namespace samochod
         }
         public void Draw(SpriteBatch spriteBatch)
         {
+            foreach (var zon in zones)
+            {
+                zon.Draw(spriteBatch);
+                //spriteBatch.Draw(textures[2], )
+            }
             foreach (var entity in entities)
             {
-                
                 entity.Draw(spriteBatch);
                 //spriteBatch.Draw(textures[2], )
             }

@@ -57,7 +57,10 @@ namespace samochod
             // load entity manager
             entityManager = new EntityManager();
             entityManager.text = text;
-            entityManager.EntityMachen( levelManager.currentLevel.entities);
+
+            // loading levle data
+            entityManager.LevelMachen( levelManager.currentLevel);
+             
             LevelManager.tileSet = textures[3];
             LevelManager.txt = text;
             levelManager.entityManager = entityManager;

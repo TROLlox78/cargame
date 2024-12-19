@@ -91,6 +91,8 @@ namespace samochod
             {
                 currentLevel.tileMap.Add(new Tile(TileID.sEmpty, 0));
             }
+            currentLevel.entities = new List<EntityTranslator>();
+            currentLevel.zones = new();
 
         }
         private void LoadTexture()
@@ -114,21 +116,31 @@ namespace samochod
                 makeLevel();
             }
         }
-        private void MakeHelpers()
+        private void PopulateLevel()
         {
-            currentLevel.entities.Clear();
+            // add zones
+            currentLevel.zones = new();
+            foreach (var z in EntityManager.zones) 
+            {
+                currentLevel.zones.Add(new ZoneTranslator(z.EntityType,z.pX,z.pY,
+                    z.Width,z.Height));            
+            }
+
+            // add entities
+            currentLevel.entities = new();
             foreach ( var e in EntityManager.entities)
             {
                 if (e is Car)
                 {
-                    currentLevel.entities.Add(new EntityHelper(EntityType.car,e.position.X,
+                    currentLevel.entities.Add(new EntityTranslator(EntityType.car,e.position.X,
                         e.position.Y,e.rotation,((Car)e).carModel));
                 }
+                
             }
         }
         public void SaveData()
         {
-            MakeHelpers();
+            PopulateLevel();
             string file = $"lvl\\level{levelID}.data";
             byte[] bytes = JsonSerializer.SerializeToUtf8Bytes(currentLevel);
             File.WriteAllBytes(file, bytes);
@@ -204,22 +216,28 @@ namespace samochod
             {
                 actionStr = "";
 
+                zoneRect = new();
                 if (Input.mouseInBounds)
                 {
                     if (Input.IsLeftClicked() && !drawing)
                     {
-                        zoneRect = new();
 
                         drawing = true;
                         zonePos = Input.mousePosition;
                     }
-                    else if (Input.IsLeftClicked() && drawing)
+                    
+                    else if (drawing)
                     {
-                        drawing = false;
-                        zoneRect = new(zonePos, new Point(Input.mousePosition.X- zonePos.X,
-                             Input.mousePosition.Y- zonePos.Y));
-                        entityManager.AddZone(zoneRect, EntityType.collisionZone);
+                        zoneRect = new(zonePos, new Point(Input.mousePosition.X - zonePos.X,
+                                Input.mousePosition.Y - zonePos.Y));
+                        if (Input.IsLeftClicked())
+                        {
+                            drawing = false;
+                            entityManager.AddZone(new Zone(EntityType.collisionZone, zoneRect.X,
+                                zoneRect.Y, zoneRect.Width, zoneRect.Height));
+                        }
                     }
+                    
                 }
             }
             if (Input.IsKeyPressed(Keys.M))
@@ -271,9 +289,10 @@ namespace samochod
             if (actionType == ActionType.CollisionZone)
             {
                 float previewRot = (previewTile.flags & 0b0000_0011) * (float)Math.PI / 2;
-                spritebatch.Draw(tileSet, zoneRect, GetTile(TileID.pEmpty2), Color.White,
+                spritebatch.Draw(tileSet, zoneRect, GetTile(TileID.pEmpty2), new Color(Color.Pink, 0.4f),
                     0, Vector2.Zero,  SpriteEffects.None, 0f);
             }
+
             
         }
     }
