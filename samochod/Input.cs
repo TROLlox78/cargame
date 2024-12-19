@@ -50,6 +50,11 @@ namespace samochod
                 }
 
             }
+            public static bool mouseInside(Rectangle rect){
+                if (rect.Contains(mousePosition))
+                return true;
+                return false;
+                }
 
             public static void Update(MouseState mouse, KeyboardState keyboard)
             {

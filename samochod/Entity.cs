@@ -20,10 +20,10 @@ namespace samochod
         public EntityType EntityType;
         public bool alive = true;
         public bool mouseable = true;
-        public Vector2 position;
+        public Vector2 position {  get; set; }
         public Vector2 origin; // offset to the center of the texture from it's top left corner
         public Vector2 offset; // center of mass offset
-        public float rotation;
+        public float rotation {  get; set; }
         public float scale=1;
 
         public static List<Texture2D> textures;
@@ -32,7 +32,7 @@ namespace samochod
         public int width, height;
         public Shape hitbox {
             get
-            { return new Shape(position, offset, scale, rotation, textureBoundry);  }
+            { return new Shape(position, offset, scale, rotation, width/2, height/2);  }
                 
                 }
         //public Entity(Texture2D texture)
@@ -72,13 +72,14 @@ namespace samochod
         }
         public virtual void Draw(SpriteBatch spriteBatch)
         {
-            if (texture != null) 
+            if (texture != null)
             {
-                spriteBatch.Draw(texture, position, Color.White);
+                spriteBatch.Draw(texture, position, textureBoundry, Color.White, rotation, origin, scale, SpriteEffects.None, 0f);
+                //DrawHitbox(spriteBatch);
             }
             else
             {
-                Debug.WriteLine("Entity: {0} has no texture",ID);
+                Debug.WriteLine("Entity: {0} has no texture", ID);
             }
         }
         public virtual object Clone()

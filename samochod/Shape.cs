@@ -53,13 +53,13 @@ namespace samochod
             }
         }
 
-        public Shape(Vector2 pos, Vector2 offset, float scale, float ang, Rectangle texture)
+        public Shape(Vector2 pos, Vector2 offset, float scale, float ang, int width, int height)
         {// rectangle shape based on texture
          // scale not taken into account, this will cause a bug in the future
             position = pos;
             angle += ang;
-            int width = texture.Width/2;
-            int height = texture.Height/2;
+            //int width = texture.Width/2;
+            //int height = texture.Height/2;
             float pX = (pos.X - offset.X);
             float pY = (pos.Y - offset.Y);
             points = new List<Vector2>(4);

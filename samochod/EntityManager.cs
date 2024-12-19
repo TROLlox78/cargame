@@ -14,7 +14,7 @@ namespace samochod
     {
         // list of all spawned entities
         public static List<Entity> entities;
-        public static List<Zone> zones;
+        // public static List<Zone> zones;
         // pool of available models to use
         public Dictionary<EntityType, Entity> entityPool;
         public Player player;
@@ -25,7 +25,7 @@ namespace samochod
         {
             if (entities == null) { 
                 entities = new List<Entity>();
-                zones = new List<Zone>();
+                //zones = new List<Zone>();
             }
 
             else { entities.Clear(); }
@@ -48,7 +48,7 @@ namespace samochod
         public void LevelMachen(Level lvl)
         {
             var ent = lvl.entities;
-            foreach (var helper in ent)
+            foreach (EntityTranslator helper in ent)
             {
                 switch (helper.type)
                 {
@@ -56,7 +56,7 @@ namespace samochod
                         AddCar(helper); break;
                 }
             }
-            foreach (var zon in lvl.zones)
+            foreach (ZoneTranslator zon in lvl.zones)
             {
                 AddZone(zon);
             }
@@ -69,11 +69,15 @@ namespace samochod
         }
         public void AddZone(Zone obj) 
         {
-            zones.Add(obj);
+            obj.ID = globalID++;
+            entities.Add(obj);
         }
         public void AddZone(ZoneTranslator obj)
         {
-            zones.Add(new Zone(obj.type,obj.px,obj.py,obj.Width,obj.Height));
+            //zones.Add(new Zone(obj.type,obj.px,obj.py,obj.Width,obj.Height));
+            var tmp = new Zone(obj.type, obj.px, obj.py, obj.Width, obj.Height);
+            tmp.ID = globalID++;
+            entities.Add(tmp);
         }
         public Player AddPlayer()
         {
@@ -142,11 +146,7 @@ namespace samochod
         }
         public void Draw(SpriteBatch spriteBatch)
         {
-            foreach (var zon in zones)
-            {
-                zon.Draw(spriteBatch);
-                //spriteBatch.Draw(textures[2], )
-            }
+
             foreach (var entity in entities)
             {
                 entity.Draw(spriteBatch);

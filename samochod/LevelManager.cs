@@ -118,22 +118,29 @@ namespace samochod
         }
         private void PopulateLevel()
         {
-            // add zones
+            
             currentLevel.zones = new();
-            foreach (var z in EntityManager.zones) 
-            {
-                currentLevel.zones.Add(new ZoneTranslator(z.EntityType,z.pX,z.pY,
-                    z.Width,z.Height));            
-            }
-
             // add entities
             currentLevel.entities = new();
             foreach ( var e in EntityManager.entities)
             {
+                if (e is Player)
+                {
+                    continue;
+                }
                 if (e is Car)
                 {
-                    currentLevel.entities.Add(new EntityTranslator(EntityType.car,e.position.X,
-                        e.position.Y,e.rotation,((Car)e).carModel));
+                    currentLevel.entities.Add(new EntityTranslator(EntityType.car,
+                        e.position.X ,
+                        e.position.Y ,
+                        e.rotation,((Car)e).carModel));
+                }
+                if (e is Zone)
+                {
+                    currentLevel.zones.Add(new ZoneTranslator(e.EntityType,
+                    e.position.X - e.origin.X,
+                    e.position.Y - e.origin.Y,
+                    e.width, e.height));
                 }
                 
             }
@@ -233,8 +240,9 @@ namespace samochod
                         if (Input.IsLeftClicked())
                         {
                             drawing = false;
-                            entityManager.AddZone(new Zone(EntityType.collisionZone, zoneRect.X,
-                                zoneRect.Y, zoneRect.Width, zoneRect.Height));
+                            entityManager.AddZone(new Zone(EntityType.collisionZone, 
+                                zoneRect.X ,
+                                zoneRect.Y , zoneRect.Width, zoneRect.Height));
                         }
                     }
                     
