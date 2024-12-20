@@ -6,6 +6,11 @@ using System.Threading.Tasks;
 
 namespace samochod
 {
+    public enum GameState
+    {
+        running,
+        menu,
+    }
    public enum EntityType
     {
         player,

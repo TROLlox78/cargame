@@ -15,12 +15,12 @@ namespace samochod
         private SpriteBatch _spriteBatch;
         private EntityManager entityManager;
         private TextManager text;
+        GameState gameState = GameState.menu;
         Stopwatch sw;
         // maybe create a texture manager but, not useful for small game
         List<Texture2D> textures;
-        // temp
         LevelManager levelManager;
-
+        MenuManager menuManager;
         public Game1()
         {
             _graphics = new GraphicsDeviceManager(this);
@@ -40,6 +40,7 @@ namespace samochod
             text.fipps  = Content.Load<SpriteFont>("Fonts/fipps");
             sw = new Stopwatch();
             levelManager = new ();
+            menuManager = new MenuManager ();
             base.Initialize();
         }
 
@@ -74,38 +75,36 @@ namespace samochod
         {
             sw.Start();
             Input.Update(Mouse.GetState(), Keyboard.GetState());
-            text.Write(new Text(string.Format("mX: {0} mY: {1}", Input.mousePosition.X, Input.mousePosition.Y)));
-            text.Write(new Text(string.Format("pX: {0} pY: {1}", entityManager.player.position.X, entityManager.player.position.Y)));
-            //text.Write(new Text(string.Format("pX: {0} pY: {1}", entityManager.entities[0].position.X, entityManager.entities[0].position.Y)));
+            text.Write(new Text($"mX: {Input.mousePosition.X} mY: { Input.mousePosition.Y}"));
+            text.Write(new Text($"pX: {entityManager.player.position.X} pY: {entityManager.player.position.Y}"));
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Input.IsKeyDown(Keys.Escape))
                 Exit();
-
-
-            if (entityManager.player?.alive == false)
+            if (gameState == GameState.menu)
             {
-                entityManager.AddPlayer();
-
+                menuManager.Update(gameTime);
             }
-
-            if (Input.IsKeyDown(Keys.P))
+            else if (gameState == GameState.running)
             {
-                if (entityManager.player != null)
-                entityManager.player.alive = false;
-            }
-            if (Input.IsKeyPressed(Keys.T))
-            {
-                List<Vector2> x = entityManager.player.hitbox.points;
-                for (int i = 0; i < x.Count; i++) 
-                    Debug.WriteLine("point {0} x:{1} y:{2}", i, x[i].X, x[i].Y);
-                
-            }
 
-            levelManager.Update(gameTime);
-            entityManager.Update(gameTime);
+                if (entityManager.player?.alive == false)
+                {
+                    entityManager.AddPlayer();
+
+                }
+
+                if (Input.IsKeyDown(Keys.P))
+                {
+                    if (entityManager.player != null)
+                        entityManager.player.alive = false;
+                }
+
+
+                levelManager.Update(gameTime);
+                entityManager.Update(gameTime);
+            }
 
             if (sw.ElapsedMilliseconds > 1000) {
                 sw.Restart();
-                //Debug.WriteLine("{0}", entityManager.entities.Count);
             }
             base.Update(gameTime);
         }
