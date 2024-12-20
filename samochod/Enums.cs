@@ -10,6 +10,8 @@ namespace samochod
     {
         running,
         menu,
+        options,
+        levelSelect,
     }
    public enum EntityType
     {

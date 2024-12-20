@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using samochod.monogame_test;
+using System;
 
 
 namespace samochod
@@ -35,6 +36,14 @@ namespace samochod
                 position.Y - size.Y/4);
 
         }
+
+        public void ClickEvent()
+        {
+            Click?.Invoke(this, EventArgs.Empty);
+        }
+        public event EventHandler Click;
+
+
         public override void Update(GameTime gameTime)
         {
             currentColor = plain;
@@ -43,7 +52,7 @@ namespace samochod
                 currentColor = highlight;
                 if (Input.IsLeftClicked())
                 {
-                    Game1.gameState = GameState.running;
+                    ClickEvent();
                 }
             }
         }
