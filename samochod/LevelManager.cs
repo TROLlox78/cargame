@@ -150,7 +150,14 @@ namespace samochod
             PopulateLevel();
             string file = $"lvl\\level{levelID}.data";
             byte[] bytes = JsonSerializer.SerializeToUtf8Bytes(currentLevel);
-            File.WriteAllBytes(file, bytes);
+            if (File.Exists(file))
+            {
+                File.WriteAllBytes(file, bytes);
+            }
+            else
+            {
+                throw new Exception("no save file found");
+            }
             Debug.WriteLine($"{file} saved");
         }
         public Rectangle GetTile(TileID ID)

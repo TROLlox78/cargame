@@ -15,7 +15,7 @@ namespace samochod
         private SpriteBatch _spriteBatch;
         private EntityManager entityManager;
         private TextManager text;
-        GameState gameState = GameState.menu;
+        public static GameState gameState = GameState.menu;
         Stopwatch sw;
         // maybe create a texture manager but, not useful for small game
         List<Texture2D> textures;
@@ -54,6 +54,8 @@ namespace samochod
             textures[2].SetData(new Color[] { Color.White });
             textures.Add(Content.Load<Texture2D>("Tiles/tileset"));
             Entity.textures = textures;
+            Component.textures = textures;
+            Component.TextMan = text;
             levelManager.LoadLevel(levelID:0);
             // load entity manager
             entityManager = new EntityManager();
@@ -113,11 +115,16 @@ namespace samochod
         {
             GraphicsDevice.Clear(Color.CornflowerBlue);
             _spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.PointClamp, null, null, null, null);
-            
-            levelManager.Draw(_spriteBatch);
-            entityManager.Draw(_spriteBatch);
-            text.Draw(_spriteBatch);
-
+            if (gameState == GameState.menu)
+            {
+                menuManager.Draw(_spriteBatch);
+            }
+            else if (gameState == GameState.running)
+            {
+                levelManager.Draw(_spriteBatch);
+                entityManager.Draw(_spriteBatch);
+                text.Draw(_spriteBatch);
+            }
             _spriteBatch.End();
             base.Draw(gameTime);
         }
