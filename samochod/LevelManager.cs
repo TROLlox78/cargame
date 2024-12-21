@@ -22,13 +22,14 @@ namespace samochod
         private Rectangle zoneRect = new();
         private bool drawing;
         private Point zonePos;
-        public EntityManager entityManager;
+        public static EntityManager entityManager;
         // ediotr
-        public static TextManager txt;
+        public static TextManager textMan;
 
         public Texture2D tileMapTexture; // only implement if perfomance bad or levels done 
         public Level currentLevel;
-        public int levelID;
+        public int levelID = 0;
+        private int levelsCount = 2;
         // data
         private static Dictionary<TileID, Point> tileDic; // using Point because int, never float
         public static Texture2D tileSet;
@@ -77,7 +78,12 @@ namespace samochod
             }
             #endregion
         }
-        public void LoadLevel(int levelID)
+        public bool reachedFinish()
+        {
+            // minus one because levelID starts at 0
+            return levelID+1>(levelsCount-1);
+        }
+        public void LoadLevel()
         {
             //makeLevel();
             LoadData(levelID);
@@ -270,7 +276,7 @@ namespace samochod
             
 
 
-            txt.Write(new Text( $"Action:{actionType.ToString()} {actionStr}"));
+            textMan.Write(new Text( $"Action:{actionType.ToString()} {actionStr}"));
         }
         public void Draw(SpriteBatch spritebatch)
         {

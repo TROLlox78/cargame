@@ -72,7 +72,7 @@ namespace samochod
             if (texture != null)
             {
                 spriteBatch.Draw(texture, position, textureBoundry, Color.White, rotation, origin, scale, SpriteEffects.None, 0f);
-                //DrawHitbox(spriteBatch);
+                if (Game1.drawHitbox) { DrawHitbox(spriteBatch); }
             }
             else
             {

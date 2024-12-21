@@ -21,11 +21,11 @@ namespace samochod
         public TextManager text;
         private int globalID = 0;
 
+
         public void initEntityManager()
         {
             if (entities == null) { 
                 entities = new List<Entity>();
-                //zones = new List<Zone>();
             }
 
             else { entities.Clear(); }
@@ -47,6 +47,7 @@ namespace samochod
         }
         public void LevelMachen(Level lvl)
         {
+            initEntityManager();
             var ent = lvl.entities;
             foreach (EntityTranslator helper in ent)
             {
@@ -74,7 +75,6 @@ namespace samochod
         }
         public void AddZone(ZoneTranslator obj)
         {
-            //zones.Add(new Zone(obj.type,obj.px,obj.py,obj.Width,obj.Height));
             var tmp = new Zone(obj.type, obj.px, obj.py, obj.Width, obj.Height);
             tmp.ID = globalID++;
             entities.Add(tmp);
@@ -128,6 +128,13 @@ namespace samochod
                     if (player.hitbox.Intersects(entity?.hitbox))
                     {
                         collided = true;
+                    }
+                    if (entity is Zone)
+                    {
+                        if (player.hitbox.Intersects(entity?.hitbox))
+                        {
+                            Game1.gameState = GameState.win;
+                        }
                     }
 
                 }

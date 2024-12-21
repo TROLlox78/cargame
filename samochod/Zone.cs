@@ -38,7 +38,7 @@ namespace samochod
         {
             spriteBatch.Draw(textures[3], rect, textureBoundry, new Color(Color.Pink,0.4f),
                 0, Vector2.Zero, SpriteEffects.None, 0f);
-            DrawHitbox(spriteBatch);
+            if (Game1.drawHitbox) { DrawHitbox(spriteBatch); }
         }
     }
 }

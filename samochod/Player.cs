@@ -26,15 +26,22 @@ namespace samochod
 
         //temp
         int skin=0;
+        private bool hasControl = true;
+
         public Player() :base() {  } 
         public void init()
         {
+            hasControl = true;
             velocity = new Vector2();
             offset = new Vector2(-30, 0);
             origin.X -= 30;
             speed = 0;
             friction = 0.2f;
             rotation = 0.0f;
+        }
+        public void RemoveControl()
+        {
+            hasControl = false;
         }
         public override void Update(GameTime gametime)
         {
@@ -63,35 +70,35 @@ namespace samochod
                 }
             }
             //Debug.WriteLine("Wh {0}",wheelRotation);
-
-            if (Input.accelerate) {
-                if (speed < topSpeed)
+            if (hasControl)
+            {
+                if (Input.accelerate)
                 {
-                    speed += 0.4f;
+                    if (speed < topSpeed)
+                    {
+                        speed += 0.4f;
+                    }
                 }
-            }
-            if (Input.steerLeft)
-            {
-                if (wheelRotation > - 90* 3.14 / 180) 
-                wheelRotation -= 0.05f;
-            }
-            if (Input.steerRight)
-            {
-                if (wheelRotation < 90 * 3.14 / 180)
-                    wheelRotation += 0.05f;
-            }
-            if (Input.brake)
-            {
-                if (speed > 0)
+                if (Input.steerLeft)
                 {
-                    speed -= 0.2f;
+                    if (wheelRotation > -90 * 3.14 / 180)
+                        wheelRotation -= 0.05f;
                 }
-            }
-            if (Input.shiftGear)
-            {
-                if (speed <= 0.2f)
+                if (Input.steerRight)
                 {
-                    direction *= -1;
+                    if (wheelRotation < 90 * 3.14 / 180)
+                        wheelRotation += 0.05f;
+                }
+                if (Input.brake)
+                {
+                    Brake();
+                }
+                if (Input.shiftGear)
+                {
+                    if (speed <= 0.2f)
+                    {
+                        direction *= -1;
+                    }
                 }
             }
 
@@ -100,6 +107,14 @@ namespace samochod
             velocity =  direction*  speed * velocityDirection;
             position += velocity;
 
+        }
+
+        public void Brake()
+        {
+            if (speed > 0)
+            {
+                speed -= 0.2f;
+            }
         }
 
         public override void Draw(SpriteBatch spriteBatch)

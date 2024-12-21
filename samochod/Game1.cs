@@ -9,6 +9,8 @@ namespace samochod
 {
     public class Game1 : Game
     {
+        public static bool debug = true;
+        public static bool drawHitbox = false;
         public static int ResX = 1280;
         public static int ResY = 896;
         private GraphicsDeviceManager _graphics;
@@ -56,60 +58,87 @@ namespace samochod
             Entity.textures = textures;
             Component.textures = textures;
             Component.TextMan = text;
-            levelManager.LoadLevel(levelID:0);
             // load entity manager
             entityManager = new EntityManager();
             entityManager.text = text;
-
-            // loading levle data
-            entityManager.LevelMachen( levelManager.currentLevel);
-             
             LevelManager.tileSet = textures[3];
-            LevelManager.txt = text;
-            levelManager.entityManager = entityManager;
+            LevelManager.textMan = text;
+            LevelManager.entityManager = entityManager;
+
+            
+             
             // temp adding car
             //entityManager.AddCar(EntityType.car);
             //entityManager.AddCar(EntityType.car, new Vector2(300, 300));
-            entityManager.AddPlayer();
+            //entityManager.AddPlayer();
         }
 
         protected override void Update(GameTime gameTime)
         {
             sw.Start();
             Input.Update(Mouse.GetState(), Keyboard.GetState());
-            text.Write(new Text($"mX: {Input.mousePosition.X} mY: { Input.mousePosition.Y}"));
-            text.Write(new Text($"pX: {entityManager.player.position.X} pY: {entityManager.player.position.Y}"));
+            text.Write(new Text($"mX: {Input.mousePosition.X} mY: {Input.mousePosition.Y}"));
+            //            text.Write(new Text($"pX: {entityManager.player.position.X} pY: {entityManager.player.position.Y}"));
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Input.IsKeyDown(Keys.Escape))
                 Exit();
             if (gameState == GameState.menu)
             {
                 menuManager.Update(gameTime);
             }
-            else if (gameState == GameState.running)
+            if (gameState == GameState.loading)
             {
+                // loading levle data
+                levelManager.LoadLevel();
+                entityManager.LevelMachen(levelManager.currentLevel);
+                entityManager.AddPlayer();
 
-                if (entityManager.player?.alive == false)
-                {
-                    entityManager.AddPlayer();
-
-                }
-
-                if (Input.IsKeyDown(Keys.P))
-                {
-                    if (entityManager.player != null)
-                        entityManager.player.alive = false;
-                }
-
-
+                gameState = GameState.running;
+            }
+            else if (gameRunning())
+            {
                 levelManager.Update(gameTime);
                 entityManager.Update(gameTime);
+                if (debug)
+                {
+                    if (entityManager.player?.alive == false)
+                    {
+                        entityManager.AddPlayer();
+
+                    }
+
+                    if (Input.IsKeyDown(Keys.P))
+                    {
+                        if (entityManager.player != null)
+                            entityManager.player.alive = false;
+                    }
+                    if (Input.IsKeyPressed(Keys.Enter))
+                    {
+                        // auto win
+                        gameState = GameState.win;
+                    }
+                }
+                if (gameState == GameState.win)
+                {
+                    entityManager.player.RemoveControl();
+                    entityManager.player.Brake();
+                    if (Input.IsKeyPressed(Keys.Space))
+                    {
+                        if (!levelManager.reachedFinish())
+                            levelManager.levelID++;
+                        gameState = GameState.loading;
+                    }
+                }
+                
             }
 
-            if (sw.ElapsedMilliseconds > 1000) {
+            if (sw.ElapsedMilliseconds > 1000)
+            {
                 sw.Restart();
             }
             base.Update(gameTime);
         }
+
+       
 
         protected override void Draw(GameTime gameTime)
         {
@@ -117,16 +146,28 @@ namespace samochod
             _spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.PointClamp, null, null, null, null);
             if (gameState == GameState.menu)
             {
-                menuManager.Draw(_spriteBatch);
+                menuManager.MainMenuDraw(_spriteBatch);
             }
-            else if (gameState == GameState.running)
+            if (gameRunning())
             {
                 levelManager.Draw(_spriteBatch);
                 entityManager.Draw(_spriteBatch);
                 text.Draw(_spriteBatch);
+
+                if (gameState == GameState.win)
+                {
+                    
+                    menuManager.WinScreenDraw(_spriteBatch);
+
+                }
+
             }
             _spriteBatch.End();
             base.Draw(gameTime);
+        }
+        private static bool gameRunning()
+        {
+            return gameState == GameState.running || gameState == GameState.win;
         }
     }
 }

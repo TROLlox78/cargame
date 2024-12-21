@@ -12,6 +12,8 @@ namespace samochod
         menu,
         options,
         levelSelect,
+        loading,
+        win,
     }
    public enum EntityType
     {
