@@ -15,6 +15,14 @@ namespace samochod
     {
         protected static Dictionary<Model, Rectangle> models;
         public Model carModel;
+
+        // movement related
+        public float speed;
+        protected float friction = 0.2f;
+        public Vector2 velocity;
+        public Vector2 velocityDirection;
+        protected float direction = 1;
+
         public Car() :base()
         {
             if (models == null) { 
@@ -74,18 +82,35 @@ namespace samochod
         public override void Update(GameTime gameTime)
         {
             base.Update(gameTime);
+
+            if (speed != 0)
+            {
+                speed -= friction;
+                if (speed < 0)
+                {
+                    speed = 0;
+                }
+            }
+            //velocityDirection = new Vector2((float)Math.Cos(rotation), (float)Math.Sin(rotation));
+            velocity = direction * speed * velocityDirection;
+            position += velocity;
+
             if (width >= DistanceTo(Input.mousePosition))
             {
                 if (Input.IsKeyPressed(Keys.X))
                 {
-                    int t = (int)carModel;
-                    carModel = (Model)(++t % models.Count);
-                    textureBoundry = models[(Model)carModel];
-                    width = models[carModel].Width;
-                    height = models[carModel].Height;
-                    origin = new Vector2(width / 2, height / 2);
+                    changeModel();
                 }
             }
+        }
+        protected void changeModel()
+        {
+            int t = (int)carModel;
+            carModel = (Model)(++t % models.Count);
+            textureBoundry = models[(Model)carModel];
+            width = models[carModel].Width;
+            height = models[carModel].Height;
+            origin = new Vector2(width / 2, height / 2);
         }
 
     }

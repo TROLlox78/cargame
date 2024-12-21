@@ -15,18 +15,11 @@ namespace samochod
     public class Player : Car
     {
         // constants
-        const float topSpeed = 5f;
+        const float topSpeed = 4f;
 
-        Vector2 velocity;
-        Vector2 velocityDirection;
-        float speed;
-        float friction;
-        float direction = 1;
-        float wheelRotation = 0;
-
-        //temp
-        int skin=0;
+        private float wheelRotation = 0;
         private bool hasControl = true;
+
 
         public Player() :base() {  } 
         public void init()
@@ -36,7 +29,6 @@ namespace samochod
             offset = new Vector2(-30, 0);
             origin.X -= 30;
             speed = 0;
-            friction = 0.2f;
             rotation = 0.0f;
         }
         public void RemoveControl()
@@ -45,11 +37,7 @@ namespace samochod
         }
         public override void Update(GameTime gametime)
         {
-            if (Input.IsKeyPressed(Keys.C)) {
-                skin = ++skin % models.Count;
-                textureBoundry = models[(Model)skin];
-            }
-
+            
             rotation %= 6.28f;
             if (speed != 0)
             {

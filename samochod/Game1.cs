@@ -128,6 +128,10 @@ namespace samochod
                         gameState = GameState.loading;
                     }
                 }
+                if (Input.IsKeyDown(Keys.F)) {
+                    gameState = GameState.loading;
+
+                }
                 
             }
 

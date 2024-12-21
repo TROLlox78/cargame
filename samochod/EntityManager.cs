@@ -121,29 +121,65 @@ namespace samochod
                 }
             }
             bool collided = false;
-            foreach (var entity in entities) {
-                if (entity != player)
-                {
+            //foreach (var entity in entities) {
+            //    if (entity != player)
+            //    {
+            //
+            //        if (player.hitbox.Intersects(entity?.hitbox))
+            //        {
+            //            collided = true;
+            //            ((Car)entity).velocityDirection = player.velocityDirection/2;
+            //            ((Car)entity).speed = player.speed;
+            //
+            //        }
+            //        if (entity is Zone)
+            //        {
+            //            if (player.hitbox.Intersects(entity?.hitbox))
+            //            {
+            //                Game1.gameState = GameState.win;
+            //            }
+            //        }
+            //
+            //    }
+            //}
 
-                    if (player.hitbox.Intersects(entity?.hitbox))
+            foreach (var entity in entities)
+            {
+                foreach (var en2 in entities)
+                {
+                    if ( entity == en2)
                     {
-                        collided = true;
+                        continue;
                     }
-                    if (entity is Zone)
+                    if (entity is Car && en2 is Car)
                     {
-                        if (player.hitbox.Intersects(entity?.hitbox))
+                        if (entity.hitbox.Intersects(en2?.hitbox))
                         {
-                            Game1.gameState = GameState.win;
+                            if (entity is Player)
+                            {
+                                collided = true;
+                            }
+                            ((Car)entity).velocityDirection = ((Car)en2).velocityDirection / 2;
+                            ((Car)entity).speed = ((Car)en2).speed;
+                            
                         }
                     }
-
                 }
-                
+                if (entity is Zone)
+                {
+                    if (player.hitbox.Intersects(entity?.hitbox))
+                    {
+                        Game1.gameState = GameState.win;
+                    }
+                }
             }
             text.Write(new Text($"ent: {entities.Count}"));
             if (collided)
             {
                 text.Write(new Text("Player touching"));
+                player.RemoveControl();
+                player.position += -player.velocity*2;
+                player.speed = 0;
             }
             else {
                 text.Write(new Text("Player chill"));
