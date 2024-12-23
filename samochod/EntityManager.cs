@@ -20,7 +20,7 @@ namespace samochod
         public Player player;
         public TextManager text;
         private int globalID = 0;
-
+        
 
         public void initEntityManager()
         {
@@ -160,8 +160,16 @@ namespace samochod
                                 collided = true;
                             }
                             ((Car)entity).velocityDirection = ((Car)en2).velocityDirection / 2;
-                            ((Car)entity).speed = ((Car)en2).speed;
-                            
+                            ((Car)entity).speed = ((Car)en2).speed/2;
+                            if (((Car)entity).speed > 0.1
+                                || ((Car)entity).speed > 0.1)
+                            {
+
+                                var x = Game1.hit_8.CreateInstance();
+                                x.Play();
+                                x.Pitch = -0.9f; 
+
+                            }
                         }
                     }
                 }

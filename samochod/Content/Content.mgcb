@@ -27,6 +27,18 @@
 /processorParam:TextureFormat=Compressed
 /build:Fonts/fipps.spritefont
 
+#begin Sounds/hit_8bit.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Sounds/hit_8bit.wav
+
+#begin Sounds/theme_car.mp3
+/importer:Mp3Importer
+/processor:SongProcessor
+/processorParam:Quality=Best
+/build:Sounds/theme_car.mp3
+
 #begin Sprites/cars.png
 /importer:TextureImporter
 /processor:TextureProcessor

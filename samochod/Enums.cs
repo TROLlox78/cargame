@@ -15,6 +15,11 @@ namespace samochod
         loading,
         win,
     }
+    public enum Sound
+    {
+        hit,
+
+    }
    public enum EntityType
     {
         player,

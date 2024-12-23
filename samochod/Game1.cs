@@ -1,6 +1,8 @@
 ﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using Microsoft.Xna.Framework.Media;
 using samochod.monogame_test;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -17,12 +19,16 @@ namespace samochod
         private SpriteBatch _spriteBatch;
         private EntityManager entityManager;
         private TextManager text;
+        AudioManager audioManager;
         public static GameState gameState = GameState.menu;
         Stopwatch sw;
         // maybe create a texture manager but, not useful for small game
         List<Texture2D> textures;
         LevelManager levelManager;
         MenuManager menuManager;
+
+        public static SoundEffect hit_8;
+
         public Game1()
         {
             _graphics = new GraphicsDeviceManager(this);
@@ -64,9 +70,10 @@ namespace samochod
             LevelManager.tileSet = textures[3];
             LevelManager.textMan = text;
             LevelManager.entityManager = entityManager;
-
-            
-             
+            hit_8 = Content.Load<SoundEffect>("Sounds/hit_8bit");
+            audioManager = new AudioManager();
+            audioManager.songs.Add( Content.Load<Song>("Sounds/theme_car"));
+            audioManager.StartMusic();
             // temp adding car
             //entityManager.AddCar(EntityType.car);
             //entityManager.AddCar(EntityType.car, new Vector2(300, 300));
@@ -128,11 +135,16 @@ namespace samochod
                         gameState = GameState.loading;
                     }
                 }
-                if (Input.IsKeyDown(Keys.F)) {
+                if (Input.IsKeyPressed(Keys.F)) {
                     gameState = GameState.loading;
+                   
+                }
+                if (Input.IsKeyPressed(Keys.N))
+                {
+                    audioManager.ChangeMusicVolume(0.1f);
 
                 }
-                
+
             }
 
             if (sw.ElapsedMilliseconds > 1000)
@@ -146,7 +158,7 @@ namespace samochod
 
         protected override void Draw(GameTime gameTime)
         {
-            GraphicsDevice.Clear(Color.CornflowerBlue);
+            GraphicsDevice.Clear(Color.DarkSlateGray);
             _spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.PointClamp, null, null, null, null);
             if (gameState == GameState.menu)
             {
