@@ -2,10 +2,6 @@
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace samochod
 {
@@ -120,6 +116,34 @@ namespace samochod
                 }
             }
             return false;
+        }
+            
+        public bool InBounds(Point point)
+        {
+            float x = point.X;
+            float y = point.Y;
+            bool inside = false;
+            foreach (Edge e in edges) {
+                if (y< Math.Min(e.p1.Y, e.p2.Y))
+                {// check if point.y more than min
+                    continue;
+                }
+                if (y > Math.Max(e.p1.Y, e.p2.Y))
+                {// check if point.y is less than max
+                    continue ;
+                }
+                if (x <= Math.Max(e.p1.X, e.p2.X))
+                {
+                    float lerp = (y -  e.p1.Y) * (e.p2.X - e.p1.X)/
+                        (e.p2.Y - e.p1.Y) + e.p1.X; //?
+                    if (e.p1.X == e.p2.X || x <= lerp)
+                    {
+                        inside = !inside;
+                    }
+                }
+            }
+            return inside;
+
         }
     }
 }

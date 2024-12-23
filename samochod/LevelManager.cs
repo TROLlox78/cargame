@@ -192,7 +192,7 @@ namespace samochod
                     Debug.WriteLine("key oem period");
                     tileSelector = ++tileSelector % (tileDic.Count - 1);
                     previewTile = new((TileID)tileSelector, 0);
-
+                    
                 }
                 if (Input.IsKeyPressed(Keys.OemComma))
                 {

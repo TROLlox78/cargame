@@ -45,8 +45,8 @@ namespace samochod
         }
         public virtual void UpdateMouse() 
         {
-            if (!mouseable) { return; }
-            if (width >= DistanceTo(Input.mousePosition))
+            if (!Game1.debug) { return; }
+            if (hitbox.InBounds(Input.mousePosition) )
             {
                 if (Input.IsLeftPressed())
                 {
