@@ -189,14 +189,12 @@ namespace samochod
                 
                 if (Input.IsKeyPressed(Keys.OemPeriod))
                 {
-                    Debug.WriteLine("key oem period");
                     tileSelector = ++tileSelector % (tileDic.Count - 1);
                     previewTile = new((TileID)tileSelector, 0);
                     
                 }
                 if (Input.IsKeyPressed(Keys.OemComma))
                 {
-                    Debug.WriteLine("key less");
                     int len = tileDic.Count;
                     tileSelector = (--tileSelector % len + len) % len; // tilecount - (tilecount -id)
                     previewTile = new((TileID)tileSelector, 0);
@@ -204,10 +202,14 @@ namespace samochod
                 }
                 if (Input.IsKeyPressed(Keys.R))
                 {
-                    // TODO: FIX THIS, ONLY 2 BITS FOR ROTATION
-                    //byte rot = (byte)(previewTile.flags & 0b0000_0011);
-                    //previewTile.flags = (byte)(previewTile.flags | (++rot & 0b0000_0011));
-                    previewTile.flags++;
+                    byte rot = (byte)(previewTile.flags & 0b0000_0011); // mask out rot bits
+                    rot++; // increment rotation
+                    byte masked_rot = (byte)(rot & 0b0000_0011);
+                    previewTile.flags = (byte)((previewTile.flags & 0b1111_1100) | masked_rot);
+                }
+                if (Input.IsKeyPressed(Keys.E))
+                {
+                    previewTile.flags ^= (1 << 2);
                 }
                 if (Input.IsLeftClicked() && Input.mouseInBounds)
                 {
@@ -280,22 +282,18 @@ namespace samochod
         }
         public void Draw(SpriteBatch spritebatch)
         {
-            int scale = tileScale;
             Vector2 position = new Vector2(0, 0);
             if (tileMapTexture == null)
             {
                 for (int j = 0; j < mapHeight; j++)
                 {
-                    position.Y = (j * tileSize + origin.Y)*scale;
+                    position.Y = (j * tileSize + origin.Y)*tileScale;
 
                     for (int i = 0; i < mapWidth; i++)
                     {
-                        position.X = (i * tileSize + origin.X)*scale;
+                        position.X = (i * tileSize + origin.X) * tileScale;
                         var tile = currentLevel.tileMap[i + j * mapWidth];
-                        float rotation = (tile.flags & 0b0000_0011) * (float)Math.PI/2;
-                        
-                        spritebatch.Draw(tileSet, position, GetTile(tile.ID), Color.White,
-                            rotation, origin, scale, SpriteEffects.None, 0f);
+                        DrawTile(spritebatch, position, tile);
                         //txt.Write(new Text(position- origin, $"{i + j * mapWidth}", 0.6f));
                     }
                 }
@@ -303,9 +301,7 @@ namespace samochod
             // draw preview tile
             if (actionType == ActionType.Tile)
             {
-                float previewRot = (previewTile.flags & 0b0000_0011) * (float)Math.PI / 2;
-                spritebatch.Draw(tileSet, previewPos, GetTile(previewTile.ID), Color.White,
-                    previewRot, origin, scale, SpriteEffects.None, 0f);
+                DrawTile(spritebatch,previewPos,previewTile);
             }
             if (actionType == ActionType.CollisionZone)
             {
@@ -315,6 +311,16 @@ namespace samochod
             }
 
             
+        }
+
+        private void DrawTile(SpriteBatch spritebatch,  Vector2 position, Tile tile)
+        {
+            float rotation = (tile.flags & 0b0000_0011) * (float)Math.PI / 2;
+            bool horizontal_mirror = (tile.flags & 0b0000_0100) != 0;
+            SpriteEffects effect = horizontal_mirror ? SpriteEffects.FlipHorizontally : SpriteEffects.None;
+
+            spritebatch.Draw(tileSet, position, GetTile(tile.ID), Color.White,
+                rotation, origin, tileScale, effect, 0f);
         }
     }
 }
