@@ -1,34 +1,44 @@
-﻿using Microsoft.Xna.Framework.Audio;
+﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Media;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+
 
 namespace samochod
 {
     public class AudioManager
     {
-        public List<Song> songs;
         public Dictionary<Sound,SoundEffect> sounds;
+        public  Dictionary<string,SoundEffectInstance> instances;
 
+        public SoundEffectInstance themeInstance;
         public AudioManager() 
         { 
-            songs = new List<Song>();
             sounds = new Dictionary<Sound, SoundEffect>();
+            instances = new Dictionary<string,SoundEffectInstance>();
         }
 
-
-        void PlaySound(Sound sound)
+        public SoundEffectInstance Get(Sound sound)
+        {
+            return sounds[sound].CreateInstance();
+        }
+        public SoundEffectInstance PlaySound(Sound sound)
         {
             var instance = sounds[sound].CreateInstance();
             instance.Play();
+            return instance;
         }
-        public void StartMusic()
+        public void StartMusic(Sound song)
         {
-            MediaPlayer.IsRepeating = true;
-            MediaPlayer.Play(songs[0]);
+            if (themeInstance == null) {
+                themeInstance = Get(song);
+                themeInstance.Volume = 0.6f;
+            }
+
+            //MediaPlayer.IsRepeating = true;
+            //MediaPlayer.Volume = 0.4f;
+            //MediaPlayer.Play(songs[song]);
             
         }
         public void StopMusic() 
@@ -38,9 +48,12 @@ namespace samochod
                 MediaPlayer.Stop(); // stop current audio playback if playing or paused.
             }
         }
-        public void UpdateVolume()
+        public void Update(GameTime gameTime)
         {
-            // based on range to win zone
+            if (themeInstance.State != SoundState.Playing)
+            {
+                themeInstance.Play();
+            }
         }
         public void ChangeMusicVolume(float vol)
         {

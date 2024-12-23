@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using samochod.monogame_test;
@@ -19,7 +20,9 @@ namespace samochod
 
         private float wheelRotation = 0;
         private bool hasControl = true;
-
+        private bool startedMoving = false;
+        SoundEffectInstance idle;
+        SoundEffectInstance brake;
 
         public Player() :base() {  } 
         public void init()
@@ -30,6 +33,9 @@ namespace samochod
             origin.X -= 30;
             speed = 0;
             rotation = 0.0f;
+
+             idle = audioMan.Get(Sound.idle);
+             brake = audioMan.Get(Sound.brake);
         }
         public void RemoveControl()
         {
@@ -37,17 +43,22 @@ namespace samochod
         }
         public override void Update(GameTime gametime)
         {
-            
+            if (idle.State != SoundState.Playing)
+            {
+                idle.Play();
+            }
+            idle.Pitch = Math.Clamp(speed/topSpeed, -0.5f, 0.6f) - 0.2f;
             rotation %= 6.28f;
             if (speed != 0)
             {
+                startedMoving = true;
+
                 speed -= friction;
 
                 rotation += direction * wheelRotation * speed / 40;
 
                 if (wheelRotation != 0)
                 {
-                    //int sign = wheelRotation > 0 ? 1 : -1; 
                     // subtract some amount speed from wheel
                     wheelRotation /= 1.1f;
                 }
@@ -55,6 +66,7 @@ namespace samochod
                 if (speed < 0)
                 {
                     speed = 0;
+                    startedMoving = false;
                 }
             }
             //Debug.WriteLine("Wh {0}",wheelRotation);
@@ -65,6 +77,7 @@ namespace samochod
                     if (speed < topSpeed)
                     {
                         speed += 0.4f;
+                        
                     }
                 }
                 if (Input.steerLeft)
@@ -79,13 +92,21 @@ namespace samochod
                 }
                 if (Input.brake)
                 {
-                    Brake();
+                    if (speed != 0)
+                    {
+                        Brake();
+                        if (brake.State != SoundState.Playing && !Input.accelerate)
+                        {
+                            brake.Play();
+                        }
+                    }
                 }
                 if (Input.shiftGear)
                 {
                     if (speed <= 0.2f)
                     {
                         direction *= -1;
+                        audioMan.PlaySound(Sound.gear_shift);
                     }
                 }
             }
@@ -101,7 +122,7 @@ namespace samochod
         {
             if (speed > 0)
             {
-                speed -= 0.2f;
+                speed -= 0.4f;
             }
         }
 

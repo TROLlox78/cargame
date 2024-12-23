@@ -27,17 +27,47 @@
 /processorParam:TextureFormat=Compressed
 /build:Fonts/fipps.spritefont
 
+#begin Sounds/brake.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Sounds/brake.wav
+
+#begin Sounds/gear_shift.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Sounds/gear_shift.wav
+
+#begin Sounds/gear_shift.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Sounds/gear_shift.wav
+
 #begin Sounds/hit_8bit.wav
 /importer:WavImporter
 /processor:SoundEffectProcessor
 /processorParam:Quality=Best
 /build:Sounds/hit_8bit.wav
 
-#begin Sounds/theme_car.mp3
-/importer:Mp3Importer
-/processor:SongProcessor
+#begin Sounds/hit_8bit.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
 /processorParam:Quality=Best
-/build:Sounds/theme_car.mp3
+/build:Sounds/hit_8bit.wav
+
+#begin Sounds/idle.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Sounds/idle.wav
+
+#begin Sounds/theme_car.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Sounds/theme_car.wav
 
 #begin Sprites/cars.png
 /importer:TextureImporter

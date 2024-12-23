@@ -18,9 +18,13 @@ namespace samochod
     public enum Sound
     {
         hit,
-
+        gear_shift,
+        idle,
+        brake,
+        theme,
     }
-   public enum EntityType
+
+    public enum EntityType
     {
         player,
         car,

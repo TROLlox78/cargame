@@ -2,7 +2,6 @@
 using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
-using Microsoft.Xna.Framework.Media;
 using samochod.monogame_test;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -15,11 +14,11 @@ namespace samochod
         public static bool drawHitbox = false;
         public static int ResX = 1280;
         public static int ResY = 896;
+        private AudioManager audioManager;
         private GraphicsDeviceManager _graphics;
         private SpriteBatch _spriteBatch;
         private EntityManager entityManager;
-        private TextManager text;
-        AudioManager audioManager;
+        private TextManager textManager;
         public static GameState gameState = GameState.menu;
         Stopwatch sw;
         // maybe create a texture manager but, not useful for small game
@@ -27,7 +26,6 @@ namespace samochod
         LevelManager levelManager;
         MenuManager menuManager;
 
-        public static SoundEffect hit_8;
 
         public Game1()
         {
@@ -43,11 +41,12 @@ namespace samochod
             _graphics.PreferredBackBufferHeight = ResY;
             _graphics.ApplyChanges();
             textures = new List<Texture2D>();
-            text = new TextManager();
-            text.blazed = Content.Load<SpriteFont>("Fonts/blazed");
-            text.fipps  = Content.Load<SpriteFont>("Fonts/fipps");
+            textManager = new TextManager();
+            textManager.blazed = Content.Load<SpriteFont>("Fonts/blazed");
+            textManager.fipps  = Content.Load<SpriteFont>("Fonts/fipps");
             sw = new Stopwatch();
-            levelManager = new ();
+            levelManager = new LevelManager();
+            audioManager = new AudioManager();
             menuManager = new MenuManager ();
             base.Initialize();
         }
@@ -63,33 +62,38 @@ namespace samochod
             textures.Add(Content.Load<Texture2D>("Tiles/tileset"));
             Entity.textures = textures;
             Component.textures = textures;
-            Component.TextMan = text;
+            Component.TextMan = textManager;
             // load entity manager
             entityManager = new EntityManager();
-            entityManager.text = text;
+            entityManager.text = textManager;
+            entityManager.audio = audioManager;
+            Entity.audioMan = audioManager;
             LevelManager.tileSet = textures[3];
-            LevelManager.textMan = text;
+            LevelManager.textMan = textManager;
             LevelManager.entityManager = entityManager;
-            hit_8 = Content.Load<SoundEffect>("Sounds/hit_8bit");
-            audioManager = new AudioManager();
-            audioManager.songs.Add( Content.Load<Song>("Sounds/theme_car"));
-            audioManager.StartMusic();
-            // temp adding car
-            //entityManager.AddCar(EntityType.car);
-            //entityManager.AddCar(EntityType.car, new Vector2(300, 300));
-            //entityManager.AddPlayer();
+            audioManager.sounds.Add(Sound.hit, Content.Load<SoundEffect>("Sounds/hit_8bit"));
+            audioManager.sounds.Add(Sound.gear_shift, Content.Load<SoundEffect>("Sounds/gear_shift"));
+            audioManager.sounds.Add(Sound.idle, Content.Load<SoundEffect>("Sounds/idle"));
+            audioManager.sounds.Add(Sound.brake, Content.Load<SoundEffect>("Sounds/brake"));
+            audioManager.sounds.Add(Sound.theme, Content.Load<SoundEffect>("Sounds/theme_car"));
+
+            audioManager.StartMusic(Sound.theme);
+
         }
 
         protected override void Update(GameTime gameTime)
         {
             sw.Start();
             Input.Update(Mouse.GetState(), Keyboard.GetState());
-            text.Write(new Text($"mX: {Input.mousePosition.X} mY: {Input.mousePosition.Y}"));
-            //            text.Write(new Text($"pX: {entityManager.player.position.X} pY: {entityManager.player.position.Y}"));
+            textManager.Write(new Text($"mX: {Input.mousePosition.X} mY: {Input.mousePosition.Y}"));
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Input.IsKeyDown(Keys.Escape))
                 Exit();
+
+            audioManager.Update(gameTime);
+
             if (gameState == GameState.menu)
             {
+                
                 menuManager.Update(gameTime);
             }
             if (gameState == GameState.loading)
@@ -98,7 +102,7 @@ namespace samochod
                 levelManager.LoadLevel();
                 entityManager.LevelMachen(levelManager.currentLevel);
                 entityManager.AddPlayer();
-
+                
                 gameState = GameState.running;
             }
             else if (gameRunning())
@@ -113,7 +117,7 @@ namespace samochod
 
                     }
 
-                    if (Input.IsKeyDown(Keys.P))
+                    if (Input.IsKeyPressed(Keys.P))
                     {
                         if (entityManager.player != null)
                             entityManager.player.alive = false;
@@ -168,7 +172,7 @@ namespace samochod
             {
                 levelManager.Draw(_spriteBatch);
                 entityManager.Draw(_spriteBatch);
-                text.Draw(_spriteBatch);
+                textManager.Draw(_spriteBatch);
 
                 if (gameState == GameState.win)
                 {

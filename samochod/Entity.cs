@@ -24,6 +24,7 @@ namespace samochod
         public float scale=1;
 
         public static List<Texture2D> textures;
+        public static AudioManager audioMan;
         protected Texture2D texture;
         protected Rectangle textureBoundry;
         public int width, height;

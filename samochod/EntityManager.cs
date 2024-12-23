@@ -18,7 +18,9 @@ namespace samochod
         // pool of available models to use
         public Dictionary<EntityType, Entity> entityPool;
         public Player player;
+        //man
         public TextManager text;
+        public AudioManager audio;
         private int globalID = 0;
         
 
@@ -165,9 +167,8 @@ namespace samochod
                                 || ((Car)entity).speed > 0.1)
                             {
 
-                                var x = Game1.hit_8.CreateInstance();
-                                x.Play();
-                                x.Pitch = -0.9f; 
+                                audio.PlaySound(Sound.hit).Pitch = -0.9f;
+                                
 
                             }
                         }
