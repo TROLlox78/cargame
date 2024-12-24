@@ -33,7 +33,7 @@ namespace samochod
             origin.X -= 30;
             speed = 0;
             rotation = 0.0f;
-
+            color = Color.White;
              idle = audioMan.Get(Sound.idle);
              brake = audioMan.Get(Sound.brake);
         }

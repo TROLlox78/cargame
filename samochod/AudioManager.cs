@@ -33,7 +33,7 @@ namespace samochod
         {
             if (themeInstance == null) {
                 themeInstance = Get(song);
-                themeInstance.Volume = 0.6f;
+                themeInstance.Volume = 0.4f;
             }
 
             //MediaPlayer.IsRepeating = true;

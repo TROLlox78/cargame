@@ -10,6 +10,7 @@ namespace samochod
 {
     public class Game1 : Game
     {
+        public static bool isFocused;
         public static bool debug = true;
         public static bool drawHitbox = false;
         public static int ResX = 1280;
@@ -83,7 +84,9 @@ namespace samochod
 
         protected override void Update(GameTime gameTime)
         {
+            base.Update(gameTime);
             sw.Start();
+            isFocused = IsActive;
             Input.Update(Mouse.GetState(), Keyboard.GetState());
             textManager.Write(new Text($"mX: {Input.mousePosition.X} mY: {Input.mousePosition.Y}"));
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Input.IsKeyDown(Keys.Escape))
@@ -155,7 +158,6 @@ namespace samochod
             {
                 sw.Restart();
             }
-            base.Update(gameTime);
         }
 
        

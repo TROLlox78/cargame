@@ -23,11 +23,13 @@ namespace samochod
         public float rotation {  get; set; }
         public float scale=1;
 
+        protected static Random rand = new Random(20032003);
         public static List<Texture2D> textures;
         public static AudioManager audioMan;
         protected Texture2D texture;
         protected Rectangle textureBoundry;
         public int width, height;
+        public Color color;
         public Shape hitbox {
             get
             { return new Shape(position, offset, scale, rotation, width/2, height/2);  }
@@ -72,7 +74,7 @@ namespace samochod
         {
             if (texture != null)
             {
-                spriteBatch.Draw(texture, position, textureBoundry, Color.White, rotation, origin, scale, SpriteEffects.None, 0f);
+                spriteBatch.Draw(texture, position, textureBoundry, color, rotation, origin, scale, SpriteEffects.None, 0f);
                 if (Game1.drawHitbox) { DrawHitbox(spriteBatch); }
             }
             else

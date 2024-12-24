@@ -178,7 +178,7 @@ namespace samochod
             {
                 actionStr = "";
             }
-            if (actionType == ActionType.Tile)
+            if (actionType == ActionType.Tile && Game1.isFocused)
             {
                 actionStr = $"Placing: {((TileID)tileSelector)}";
 
@@ -189,9 +189,8 @@ namespace samochod
                 
                 if (Input.IsKeyPressed(Keys.OemPeriod))
                 {
-                    tileSelector = ++tileSelector % (tileDic.Count - 1);
+                    tileSelector = ++tileSelector % (tileDic.Count);
                     previewTile = new((TileID)tileSelector, 0);
-                    
                 }
                 if (Input.IsKeyPressed(Keys.OemComma))
                 {
@@ -211,7 +210,14 @@ namespace samochod
                 {
                     previewTile.flags ^= (1 << 2);
                 }
-                if (Input.IsLeftClicked() && Input.mouseInBounds)
+                if (Input.IsKeyPressed(Keys.Q) && Input.mouseInBounds)
+                {
+                    int idx_X = snapX / (tileScale * tileSize);
+                    int idx_Y = snapY / (tileScale * tileSize);
+                    var pickedTile = currentLevel.tileMap[idx_X + idx_Y * mapWidth];
+                    previewTile = new Tile(pickedTile.ID, pickedTile.flags);
+                }
+                if (Input.IsLeftPressed() && Input.mouseInBounds)
                 {
                     int idx_X = snapX / (tileScale * tileSize);
                     int idx_Y = snapY / (tileScale * tileSize);

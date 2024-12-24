@@ -1,6 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
-using System.Data;
 
 namespace samochod
 {
@@ -20,6 +19,7 @@ namespace samochod
             public static bool accelerate;
             public static bool brake;
             public static bool shiftGear;
+            
 
             public static void UpdatePlayer()
             {

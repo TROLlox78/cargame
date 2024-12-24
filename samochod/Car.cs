@@ -14,6 +14,7 @@ namespace samochod
     public class Car : Entity
     {
         protected static Dictionary<Model, Rectangle> models;
+        public static List<Model> whiteCars;
         public Model carModel;
 
         // movement related
@@ -22,7 +23,6 @@ namespace samochod
         public Vector2 velocity;
         public Vector2 velocityDirection;
         protected float direction = 1;
-
         public Car() :base()
         {
             if (models == null) { 
@@ -54,6 +54,7 @@ namespace samochod
             origin = new Vector2(width / 2, height / 2);
             this.position = position;
             this.rotation = rotation;
+            color = changeColor();
             Debug.WriteLine($"created car{ID}");
         }
         private void InitModelsDict()
@@ -78,6 +79,14 @@ namespace samochod
                 {Model.Transport5, new  (231,311, 103, 49)},
                 {Model.Transport6, new  (231,369, 103, 49)},
             };
+            whiteCars = new List<Model> {
+                Model.Luxury,
+                Model.Muscle,
+                Model.Sports,
+                Model.Limo,
+                Model.Transport6,
+                Model.Pickup,
+            };
         }
         public override void Update(GameTime gameTime)
         {
@@ -95,13 +104,22 @@ namespace samochod
             velocity = direction * speed * velocityDirection;
             position += velocity;
 
-            if (width >= DistanceTo(Input.mousePosition))
+            if (hitbox.InBounds(Input.mousePosition))
             {
                 if (Input.IsKeyPressed(Keys.X))
                 {
                     changeModel();
                 }
             }
+        }
+        protected Color changeColor()
+        {
+
+            if (whiteCars.Contains(carModel))
+            {
+                return new Color(rand.Next() % 255, rand.Next() % 255, rand.Next() % 255);
+            }
+            return Color.White;
         }
         protected void changeModel()
         {
