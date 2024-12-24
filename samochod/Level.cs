@@ -11,7 +11,7 @@ namespace samochod
 {
     public class Level
     {
-        string name {  get; set; }
+        public string name {  get; set; }
 
         // holds level data
         public List<Tile> tileMap {  get; set; }

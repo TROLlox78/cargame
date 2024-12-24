@@ -72,6 +72,7 @@ namespace samochod
         }
         public void AddZone(Zone obj) 
         {
+            // PROBLEMS START HERE
             obj.ID = globalID++;
             entities.Add(obj);
         }
@@ -123,28 +124,8 @@ namespace samochod
                 }
             }
             bool collided = false;
-            //foreach (var entity in entities) {
-            //    if (entity != player)
-            //    {
-            //
-            //        if (player.hitbox.Intersects(entity?.hitbox))
-            //        {
-            //            collided = true;
-            //            ((Car)entity).velocityDirection = player.velocityDirection/2;
-            //            ((Car)entity).speed = player.speed;
-            //
-            //        }
-            //        if (entity is Zone)
-            //        {
-            //            if (player.hitbox.Intersects(entity?.hitbox))
-            //            {
-            //                Game1.gameState = GameState.win;
-            //            }
-            //        }
-            //
-            //    }
-            //}
-
+            bool inNoParkZone = false;
+            bool inWinZone = false;
             foreach (var entity in entities)
             {
                 foreach (var en2 in entities)
@@ -163,13 +144,10 @@ namespace samochod
                             }
                             ((Car)entity).velocityDirection = ((Car)en2).velocityDirection / 2;
                             ((Car)entity).speed = ((Car)en2).speed/2;
-                            if (((Car)entity).speed > 0.1
-                                || ((Car)entity).speed > 0.1)
+                            if (((Car)entity).speed > 0.1)
                             {
-
                                 audio.PlaySound(Sound.hit).Pitch = -0.9f;
                                 
-
                             }
                         }
                     }
@@ -178,10 +156,20 @@ namespace samochod
                 {
                     if (player.hitbox.Intersects(entity?.hitbox))
                     {
-                        Game1.gameState = GameState.win;
+                        if (entity.EntityType == EntityType.noParkZone)
+                        {
+                            inNoParkZone = true;
+                        }
+                        if (entity.EntityType == EntityType.winZone &&
+                            !inNoParkZone)
+                        {
+                            inWinZone = true;
+                        }
+                        
                     }
                 }
             }
+           
             text.Write(new Text($"ent: {entities.Count}"));
             if (collided)
             {
@@ -189,6 +177,16 @@ namespace samochod
                 player.RemoveControl();
                 player.position += -player.velocity*2;
                 player.speed = 0;
+            }else if (inNoParkZone)
+            {
+                text.Write(new Text("Player park in lines"));
+
+            }
+            else if (!inNoParkZone && inWinZone)
+            {
+                Game1.gameState = GameState.win;
+                text.Write(new Text("Player in"));
+
             }
             else {
                 text.Write(new Text("Player chill"));

@@ -19,6 +19,7 @@ namespace samochod
         private ActionType actionType = ActionType.None;
         private string actionStr;
 
+        private static EntityType zoneSelector = EntityType.collisionZone;
         private Rectangle zoneRect = new();
         private bool drawing;
         private Point zonePos;
@@ -33,11 +34,11 @@ namespace samochod
         // data
         private static Dictionary<TileID, Point> tileDic; // using Point because int, never float
         public static Texture2D tileSet;
-        public static int tileSize = 16;
+        public const int tileSize = 16;
         public static Vector2 origin = new Vector2(tileSize/2, tileSize / 2);
-        public static int tileScale = 2;
-        public static int mapWidth = 1280 / (tileSize * tileScale);
-        public static int mapHeight = 896 / (tileSize * tileScale);
+        public const int tileScale = 2;
+        public const int mapWidth = 1280 / (tileSize * tileScale);
+        public const int mapHeight = 896 / (tileSize * tileScale);
 
         public LevelManager()
         {
@@ -128,8 +129,10 @@ namespace samochod
             currentLevel.zones = new();
             // add entities
             currentLevel.entities = new();
-            foreach ( var e in EntityManager.entities)
+            foreach ( Entity e in EntityManager.entities)
             {
+                Debug.WriteLine($"Saving entity type {e.EntityType.ToString()}");
+
                 if (e is Player)
                 {
                     continue;
@@ -148,7 +151,6 @@ namespace samochod
                     e.position.Y - e.origin.Y,
                     e.width, e.height));
                 }
-                
             }
         }
         public void SaveData()
@@ -174,9 +176,12 @@ namespace samochod
         }
         public void Update(GameTime gameTime)
         {
+            Game1.canMouse = false;
             if  (actionType == ActionType.None)
             {
                 actionStr = "";
+                // allow for mousing things
+                Game1.canMouse = true;
             }
             if (actionType == ActionType.Tile && Game1.isFocused)
             {
@@ -225,6 +230,14 @@ namespace samochod
                         previewTile.ID, previewTile.flags);
                     Debug.WriteLine($"idx x:{idx_X}, y:{idx_Y}");
                 }
+                if (Input.IsRightClicked() && Input.mouseInBounds)
+                {
+                    int idx_X = snapX / (tileScale * tileSize);
+                    int idx_Y = snapY / (tileScale * tileSize);
+                    currentLevel.tileMap[idx_X + idx_Y * mapWidth] = new Tile(
+                        TileID.sEmpty, 0);
+                    Debug.WriteLine($"idx x:{idx_X}, y:{idx_Y}");
+                }
             }
             if (actionType == ActionType.Car)
             {
@@ -242,9 +255,27 @@ namespace samochod
             }
             if (actionType == ActionType.CollisionZone)
             {
-                actionStr = "";
+                actionStr = $"Placing: {((EntityType)zoneSelector)}";
 
+                
                 zoneRect = new();
+
+                if (Input.IsKeyPressed(Keys.OemPeriod)) // '.' key
+                {
+                    if (zoneSelector != EntityType.noParkZone)
+                    {
+                        zoneSelector = ++zoneSelector;
+                    } else {
+                        zoneSelector = EntityType.collisionZone;
+                    }
+                }
+                if (Input.IsKeyPressed(Keys.OemComma))
+                {
+                    //int len = tileDic.Count;
+                    //zoneSelector = (--zoneSelector % len + len) % len; // tilecount - (tilecount -id)
+
+                }
+
                 if (Input.mouseInBounds)
                 {
                     if (Input.IsLeftClicked() && !drawing)
@@ -261,9 +292,13 @@ namespace samochod
                         if (Input.IsLeftClicked())
                         {
                             drawing = false;
-                            entityManager.AddZone(new Zone(EntityType.collisionZone, 
-                                zoneRect.X ,
-                                zoneRect.Y , zoneRect.Width, zoneRect.Height));
+
+                            var XD = new Zone(zoneSelector,
+                                zoneRect.X,
+                                zoneRect.Y, zoneRect.Width, zoneRect.Height);
+                            entityManager.AddZone(XD);
+                            Debug.WriteLine($"{zoneSelector} becomse {XD.EntityType.ToString()}");
+                            // abosultly perpedicular
                         }
                     }
                     
@@ -285,6 +320,7 @@ namespace samochod
 
 
             textMan.Write(new Text( $"Action:{actionType.ToString()} {actionStr}"));
+            textMan.Write(new Text( $"Level : {levelID}"));
         }
         public void Draw(SpriteBatch spritebatch)
         {
@@ -312,7 +348,7 @@ namespace samochod
             if (actionType == ActionType.CollisionZone)
             {
                 float previewRot = (previewTile.flags & 0b0000_0011) * (float)Math.PI / 2;
-                spritebatch.Draw(tileSet, zoneRect, GetTile(TileID.pEmpty2), new Color(Color.Pink, 0.4f),
+                spritebatch.Draw(tileSet, zoneRect, GetTile(TileID.pEmpty2), new Color(Color.Black, 0.4f),
                     0, Vector2.Zero,  SpriteEffects.None, 0f);
             }
 

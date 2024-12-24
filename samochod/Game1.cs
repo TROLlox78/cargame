@@ -12,6 +12,7 @@ namespace samochod
     {
         public static bool isFocused;
         public static bool debug = true;
+        public static bool canMouse = false;
         public static bool drawHitbox = false;
         public static int ResX = 1280;
         public static int ResY = 896;

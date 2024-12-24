@@ -29,7 +29,7 @@ namespace samochod
         protected Texture2D texture;
         protected Rectangle textureBoundry;
         public int width, height;
-        public Color color;
+        public Color color = Color.White;
         public Shape hitbox {
             get
             { return new Shape(position, offset, scale, rotation, width/2, height/2);  }
@@ -48,7 +48,7 @@ namespace samochod
         public virtual void UpdateMouse() 
         {
             if (!Game1.debug) { return; }
-            if (hitbox.InBounds(Input.mousePosition) )
+            if (hitbox.InBounds(Input.mousePosition) && Game1.canMouse )
             {
                 if (Input.IsLeftPressed())
                 {

@@ -2,18 +2,13 @@
 using Microsoft.Xna.Framework.Graphics;
 using samochod.monogame_test;
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Text.Json.Serialization;
-using System.Threading.Tasks;
+
 
 namespace samochod
 {
     public class Zone : Entity
     {
-        EntityType entityType;
         public Rectangle rect { 
             get 
             { return new Rectangle((int)(position.X-origin.X), (int)(position.Y-origin.Y),width,height); } 
@@ -22,7 +17,9 @@ namespace samochod
         
         public Zone(EntityType entityType, float pX, float pY, int Width, int Height)
         {
-            this.entityType = entityType;
+            EntityType = entityType;
+            Debug.WriteLine(EntityType);
+            Debug.WriteLine(entityType);
             width = Width;
             height = Height;
             origin = new Vector2(width/2, height/2);
@@ -36,9 +33,31 @@ namespace samochod
         }
         public override void Draw(SpriteBatch spriteBatch)
         {
-            spriteBatch.Draw(textures[3], rect, textureBoundry, new Color(Color.Pink,0.4f),
-                0, Vector2.Zero, SpriteEffects.None, 0f);
+            if (!Game1.debug)
+            { return; }
+            switch (EntityType)
+            {
+                case EntityType.collisionZone:
+                    spriteBatch.Draw(textures[3], rect, textureBoundry,
+                        new Color(Color.Pink, 0.4f),
+                        0, Vector2.Zero, SpriteEffects.None, 0f);
+                    break;
+                case EntityType.winZone:
+                    spriteBatch.Draw(textures[3], rect, textureBoundry,
+                        new Color(Color.Green, 0.4f),
+                        0, Vector2.Zero, SpriteEffects.None, 0f);
+                    break;
+                case EntityType.noParkZone:
+                    spriteBatch.Draw(textures[3], rect, textureBoundry,
+                        new Color(Color.Red, 0.4f),
+                        0, Vector2.Zero, SpriteEffects.None, 0f);
+                    break;
+                    //default:
+                    //throw new Exception($"incorrect type assigned to zone: {entityType.ToString()}");
+
+            }
             if (Game1.drawHitbox) { DrawHitbox(spriteBatch); }
+            
         }
     }
 }
