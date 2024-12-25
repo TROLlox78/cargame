@@ -17,6 +17,22 @@ namespace samochod
     {
         // constants
         const float topSpeed = 4f;
+        public List<Vector2> wheelPositionNormal;
+        public List<Vector2> _wheelPosition = new List<Vector2>();
+        public List<Vector2> wheelPosition
+        {
+            get
+            {
+                _wheelPosition.Clear();
+                foreach (var wheel in wheelPositionNormal)
+                {
+                    var pointNormal = Shape.rotationMatrix(rotation, wheel);
+                    Vector2 pointInSpace = new Vector2(pointNormal.X + position.X, pointNormal.Y + position.Y);
+                    _wheelPosition.Add(pointInSpace);
+                }
+                return _wheelPosition;
+            }
+            }
 
         private float wheelRotation = 0;
         private bool hasControl = true;
@@ -36,6 +52,18 @@ namespace samochod
             color = Color.White;
              idle = audioMan.Get(Sound.idle);
              brake = audioMan.Get(Sound.brake);
+
+            wheelPositionNormal = new List<Vector2> {
+                // top left
+                new Vector2(+width / 2 + 15, -height / 2 + 5),
+                // top right
+                 new Vector2(+width / 2 + 15, +height / 2 - 5),
+                // bottom left
+                new Vector2(-width / 2 + 30 + 10, -height / 2 + 5),
+                //bottom right
+                new Vector2(-width / 2 + 30 + 10, +height / 2 - 5),
+            };
+
         }
         public void RemoveControl()
         {
@@ -43,6 +71,7 @@ namespace samochod
         }
         public override void Update(GameTime gametime)
         {
+            UpdateMouse();
             if (idle.State != SoundState.Playing)
             {
                 idle.Play();
@@ -110,14 +139,23 @@ namespace samochod
                     }
                 }
             }
-
+            checkForIllegalBlocks();
             
             velocityDirection = new Vector2((float)Math.Cos(rotation), (float)Math.Sin(rotation));
             velocity =  direction*  speed * velocityDirection;
             position += velocity;
 
         }
-
+        private void checkForIllegalBlocks()
+        {
+            foreach (var wheel in wheelPosition)
+            {
+                if (LevelManager.CheckTile(wheel) == TileID.gGrass)
+                {
+                    
+                }
+            }
+        }
         public void Brake()
         {
             if (speed > 0)
@@ -129,6 +167,16 @@ namespace samochod
         public override void Draw(SpriteBatch spriteBatch)
         {
             base.Draw(spriteBatch);
+            
+            spriteBatch.Draw(textures[2], new Rectangle((int)position.X,(int)position.Y,4,4), Color.Yellow);
+
+            foreach (var wheel in wheelPosition) {
+
+                spriteBatch.Draw(textures[2],
+                    new Rectangle(
+                        wheel.ToPoint()     
+                    ,new Point(4,4)), Color.Yellow);
+            }
         }
 
     }

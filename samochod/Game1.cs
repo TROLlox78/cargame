@@ -104,7 +104,7 @@ namespace samochod
             {
                 // loading levle data
                 levelManager.LoadLevel();
-                entityManager.LevelMachen(levelManager.currentLevel);
+                entityManager.LevelMachen(LevelManager.currentLevel);
                 entityManager.AddPlayer();
                 
                 gameState = GameState.running;

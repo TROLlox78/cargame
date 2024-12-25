@@ -56,7 +56,7 @@ namespace samochod
                 }
                 if (Input.IsRightPressed())
                 {
-                    rotation += 0.1f;
+                    rotation += 0.05f;
                 }
                 if (Input.IsKeyPressed(Keys.Delete))
                 {

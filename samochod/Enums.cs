@@ -15,6 +15,14 @@ namespace samochod
         loading,
         win,
     }
+    public enum MessageType
+    {
+        tutorial,
+        carCollision,
+        parkInLine,
+        grassCollision,
+        nextLevel
+    }
     public enum Sound
     {
         hit,
@@ -40,8 +48,8 @@ namespace samochod
         sCurbManhole = 0,
         sEmpty,
         sTwoLines,
-        sBend,
-        sYellow,
+        gGrass,    // grass is le here
+        sYellow = 4,
         sStripSide,
         sDoubleStripSide,
         sManhole,
@@ -66,6 +74,35 @@ namespace samochod
         pBottomCorner,
         pBottom1,
         pBottom2,
+        // grass, g for grass bro
+        gEmpty,
+        gLeftTopPath,
+        gTopPath,
+        gRightTopPath,
+        gLeftSidePath,
+        gRightSidePath,
+        gLeftBottomPath,
+        gBottomPath,
+        gRightBottomPath,
+        // ponnd l 
+        lLake,
+        lTopLeft,
+        lTop1,
+        lTop2,
+        lTop3,
+        lTopRight,
+        lLeftSide1,
+        lLeftSide2,
+        lLeftSide3,
+        lRightSide1,
+        lRightSide2,
+        lRightSide3,
+        lLeftBottom,
+        lBottom1,
+        lBottom2,
+        lBottom3,
+        lRightBottom,
+
     }
     public enum Model
     {

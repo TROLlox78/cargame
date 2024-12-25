@@ -28,9 +28,9 @@ namespace samochod
         public static TextManager textMan;
 
         public Texture2D tileMapTexture; // only implement if perfomance bad or levels done 
-        public Level currentLevel;
+        public static Level currentLevel;
         public int levelID = 0;
-        private int levelsCount = 2;
+        private int levelsCount = 4;
         // data
         private static Dictionary<TileID, Point> tileDic; // using Point because int, never float
         public static Texture2D tileSet;
@@ -50,7 +50,7 @@ namespace samochod
                     {TileID.sEmpty,new Point(48,608) },
 
                     {TileID.sTwoLines,new Point(80,608) },
-                    {TileID.sBend,new Point(144,608) },
+                    //{TileID.sBend,new Point(144,608) },
                     {TileID.sYellow,new Point(16,640) },
                     {TileID.sStripSide,new Point(80,640) },
                     {TileID.sDoubleStripSide,new Point(112,640) },
@@ -75,6 +75,38 @@ namespace samochod
                     {TileID.pBottomCorner,new Point(208,704) },
                     {TileID.pBottom1,new Point(240,704) },
                     {TileID.pBottom2,new Point(272,704) },
+                    // grass
+                    {TileID.gGrass,new Point(80,816) },
+                    {TileID.gLeftTopPath,new Point(224,768) },
+                    {TileID.gTopPath,new Point(256,768) },
+                    {TileID.gRightTopPath,new Point(288,768) },
+                    {TileID.gLeftSidePath,new Point(224,800) },
+                    {TileID.gEmpty,new Point(256,800) },
+                    {TileID.gRightSidePath,new Point(288,800) },
+                    {TileID.gLeftBottomPath,new Point(224,832) },
+                    {TileID.gBottomPath,new Point(256,832) },
+                    {TileID.gRightBottomPath,new Point(288,832) },
+
+                    // lake
+                    {TileID.lLake,new Point(48,816) },
+                    {TileID.lTopLeft,new Point(16,768) },
+                    {TileID.lTop1,new Point(48,768) },
+                    {TileID.lTop2,new Point(80,768) },
+                    {TileID.lTop3,new Point(112,768) },
+                    {TileID.lTopRight,new Point(148,768) },
+
+                    {TileID.lLeftSide1,new Point(16,800) },
+                    {TileID.lLeftSide2,new Point(16,832) },
+                    {TileID.lLeftSide3,new Point(16,864) },
+                    {TileID.lRightSide1,new Point(144,800) },
+                    {TileID.lRightSide2,new Point(144,832) },
+                    {TileID.lRightSide3,new Point(144,864) },
+                    {TileID.lLeftBottom,new Point(16,896) },
+                    {TileID.lBottom1,new Point(16+32,896) },
+                    {TileID.lBottom2,new Point(16+32*2,896) },
+                    {TileID.lBottom3,new Point(16+32*3,896) },
+                    {TileID.lRightBottom,new Point(16+32*4,896) },
+
                 };
             }
             #endregion
@@ -354,7 +386,17 @@ namespace samochod
 
             
         }
+        public static TileID CheckTile(Vector2 pos)
+        {
+            int snapX = (int)pos.X / (tileScale * tileSize) * (tileScale * tileSize);
+            int snapY = (int)pos.Y / (tileScale * tileSize) * (tileScale * tileSize);
 
+            int idx_X = snapX / (tileScale * tileSize);
+            int idx_Y = snapY / (tileScale * tileSize);
+            var checkTile = currentLevel.tileMap[idx_X + idx_Y * mapWidth];
+            
+            return checkTile.ID;
+        }
         private void DrawTile(SpriteBatch spritebatch,  Vector2 position, Tile tile)
         {
             float rotation = (tile.flags & 0b0000_0011) * (float)Math.PI / 2;

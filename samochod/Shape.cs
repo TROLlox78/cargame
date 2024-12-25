@@ -38,6 +38,14 @@ namespace samochod
             }
         }
 
+        public static Vector2 rotationMatrix(float angle,Vector2 p)
+        {
+            float x = p.X;
+            float y = p.Y;
+            float newX = (float)(x * Math.Cos(angle) - y * Math.Sin(angle));
+            float newY = (float)(x * Math.Sin(angle) + y * Math.Cos(angle));
+            return new Vector2(newX,newY);
+        }
 
         public void makeEdges()
         {

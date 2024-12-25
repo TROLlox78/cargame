@@ -52,8 +52,8 @@ namespace samochod
                         new Color(Color.Red, 0.4f),
                         0, Vector2.Zero, SpriteEffects.None, 0f);
                     break;
-                    //default:
-                    //throw new Exception($"incorrect type assigned to zone: {entityType.ToString()}");
+                    default:
+                    throw new Exception($"incorrect type assigned to zone: {EntityType.ToString()}");
 
             }
             if (Game1.drawHitbox) { DrawHitbox(spriteBatch); }
