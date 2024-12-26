@@ -10,10 +10,16 @@ namespace samochod
     {
         running,
         menu,
-        options,
-        levelSelect,
         loading,
         win,
+    }
+    public enum MenuState
+    {
+        main,
+        none,
+        options,
+        levelSelect,
+
     }
     public enum MessageType
     {

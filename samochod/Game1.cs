@@ -16,6 +16,8 @@ namespace samochod
         public static bool debug = true;
         public static bool canMouse = false;
         public static bool drawHitbox = false;
+        public static bool audioMute = false;
+        public static bool difficulty = true;
         public static int ResX = 1280;
         public static int ResY = 896;
         private AudioManager audioManager;
@@ -98,10 +100,9 @@ namespace samochod
                 Exit();
 
             audioManager.Update(gameTime);
-
+            textManager.Write(new Text($"is{audioMute}"));
             if (gameState == GameState.menu)
             {
-                
                 menuManager.Update(gameTime);
             }
             if (gameState == GameState.loading)
@@ -150,7 +151,8 @@ namespace samochod
 
                     if (Input.IsKeyPressed(Keys.N))
                     {
-                        audioManager.ChangeMusicVolume(0.1f);
+                        audioManager.SwitchMute();
+
                     }
                 }
                 if (gameState == GameState.win)
@@ -216,21 +218,13 @@ namespace samochod
             _spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.PointClamp, null, null, null, null);
             if (gameState == GameState.menu)
             {
-                menuManager.MainMenuDraw(_spriteBatch);
+                menuManager.Draw(_spriteBatch);
             }
-
             if (gameState != GameState.menu)
             {
                 levelManager.Draw(_spriteBatch);
                 entityManager.Draw(_spriteBatch);
                 textManager.Draw(_spriteBatch);
-
-                if (gameState == GameState.win)
-                {
-                    
-                    menuManager.WinScreenDraw(_spriteBatch);
-
-                }
 
             }
             _spriteBatch.End();

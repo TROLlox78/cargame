@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Media;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 
 
 namespace samochod
@@ -11,8 +12,8 @@ namespace samochod
     {
         public Dictionary<Sound,SoundEffect> sounds;
         public  Dictionary<string,SoundEffectInstance> instances;
-
         public SoundEffectInstance themeInstance;
+        private bool mute = Game1.audioMute;
         public AudioManager() 
         { 
             sounds = new Dictionary<Sound, SoundEffect>();
@@ -21,45 +22,44 @@ namespace samochod
 
         public SoundEffectInstance Get(Sound sound)
         {
-            return sounds[sound].CreateInstance();
+            var xd = sounds[sound].CreateInstance();
+            //instances.Add(xd);
+            return xd;
         }
         public SoundEffectInstance PlaySound(Sound sound)
         {
             var instance = sounds[sound].CreateInstance();
-            instance.Play();
+            instance.Play(); 
             return instance;
         }
+
         public void StartMusic(Sound song)
         {
             if (themeInstance == null) {
                 themeInstance = Get(song);
-                themeInstance.Volume = 0.4f;
             }
 
         }
-        public void StopMusic() 
-        {
-            if (MediaPlayer.State != MediaState.Stopped)
-            {
-                MediaPlayer.Stop(); // stop current audio playback if playing or paused.
-            }
-        }
+
         public void Update(GameTime gameTime)
         {
-            if (themeInstance.State != SoundState.Playing)
+            mute = Game1.audioMute;
+            if (mute) {
+                themeInstance.Volume = 0;
+            }
+            else if (!mute ||(themeInstance.State != SoundState.Playing))
             {
+                themeInstance.Volume = 0.4f;
                 themeInstance.Play();
             }
         }
-        public void SwitchMute()
-        {
 
-        }
         public void ChangeMusicVolume(float vol)
         {
             Math.Clamp(vol, 0f, 1f);
             MediaPlayer.Volume = vol;
         }
-            
+        public void SwitchMute() { Game1.audioMute = !Game1.audioMute;  }
+
     }
 }

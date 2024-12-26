@@ -8,7 +8,7 @@ namespace samochod
 {
     public class Button : Component
     {
-        string text;
+        public string text;
         public Point cornerPos;
         public Vector2 textPosition;
         public Rectangle hitbox;
@@ -50,7 +50,7 @@ namespace samochod
             if (Input.mouseInside(hitbox)) 
             {
                 currentColor = highlight;
-                if (Input.IsLeftClicked())
+                if (Input.IsLeftClicked()) //TODO AND RELEASE AFTER CLICKING
                 {
                     ClickEvent();
                 }

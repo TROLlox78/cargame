@@ -15,8 +15,8 @@ namespace samochod
         Vector2 origin;
         string text;
         Color color;
-        public Title() {
-            text = "CAR GAME";
+        public Title(string s) {
+            text = s;
             color = new (255, 190, 0); // basic orange
             position = new Point(Game1.ResX / 3 + 100, 100);
             origin = new Vector2(4*scale*text.Length / 2, 1*scale);
