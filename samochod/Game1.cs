@@ -3,7 +3,9 @@ using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using samochod.monogame_test;
+using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics;
 
 namespace samochod
@@ -27,7 +29,8 @@ namespace samochod
         List<Texture2D> textures;
         LevelManager levelManager;
         MenuManager menuManager;
-
+        Stopwatch inGameTimer;
+        TimeSpan introTimer;
 
         public Game1()
         {
@@ -43,10 +46,11 @@ namespace samochod
             _graphics.PreferredBackBufferHeight = ResY;
             _graphics.ApplyChanges();
             textures = new List<Texture2D>();
+            TextManager.blazed = Content.Load<SpriteFont>("Fonts/blazed");
+            TextManager.fipps  = Content.Load<SpriteFont>("Fonts/fipps");
             textManager = new TextManager();
-            textManager.blazed = Content.Load<SpriteFont>("Fonts/blazed");
-            textManager.fipps  = Content.Load<SpriteFont>("Fonts/fipps");
             sw = new Stopwatch();
+            inGameTimer = new Stopwatch();
             levelManager = new LevelManager();
             audioManager = new AudioManager();
             menuManager = new MenuManager ();
@@ -103,15 +107,26 @@ namespace samochod
             if (gameState == GameState.loading)
             {
                 // loading levle data
-                levelManager.LoadLevel();
-                entityManager.LevelMachen(LevelManager.currentLevel);
-                entityManager.AddPlayer();
-                
+                var lvl = levelManager.LoadLevel();
+                // setting up level
+                entityManager.LevelMachen(lvl);
+                if (lvl.pIntro == null) { lvl.pIntro = new PlayerIntro(100, 100, 0, 0); }
+                entityManager.AddPlayer(lvl.pIntro);
+                introTimer =  TimeSpan.FromSeconds(lvl.pIntro.time);
+                entityManager.player.RemoveControl();
+
                 textManager.hintText.Update("Find a parking spot!");
                 gameState = GameState.running;
+                inGameTimer.Reset();
             }
             else if (gameRunning())
             {
+                playIntro(gameTime);
+                if (entityManager.player.startedMoving && !inGameTimer.IsRunning)
+                {
+                    inGameTimer.Start();
+                }
+                textManager.timer.Update($"Time: {inGameTimer.Elapsed:mm\\:ss\\.ff}");
                 levelManager.Update(gameTime);
                 entityManager.Update(gameTime);
                 if (debug)
@@ -132,19 +147,15 @@ namespace samochod
                         // auto win
                         gameState = GameState.win;
                     }
-                    if (Input.IsKeyPressed(Keys.F))
-                    {
-                        gameState = GameState.loading;
 
-                    }
                     if (Input.IsKeyPressed(Keys.N))
                     {
                         audioManager.ChangeMusicVolume(0.1f);
-
                     }
                 }
                 if (gameState == GameState.win)
                 {
+                    inGameTimer.Stop();
                     entityManager.player.RemoveControl();
                     entityManager.player.Brake();
                     if (Input.IsKeyPressed(Keys.Space))
@@ -154,11 +165,23 @@ namespace samochod
                         gameState = GameState.loading;
                     }
                 }
+                if (Input.IsKeyPressed(Keys.F))
+                {
+                    gameState = GameState.loading;
+                }
                 if (!debug)
                 {
+                    if (Input.IsKeyPressed(Keys.R))
+                    {
+                        gameState = GameState.loading;
+                    }
                     if (Input.IsKeyPressed(Keys.M))
                     {
                         audioManager.SwitchMute();
+                    }
+                    if (Input.IsKeyPressed(Keys.Q))
+                    {
+                        gameState = GameState.menu;
                     }
                 }
 
@@ -170,7 +193,22 @@ namespace samochod
             }
         }
 
-       
+        private void playIntro(GameTime gameTime)
+        {
+            if (introTimer >= TimeSpan.Zero)
+            {
+
+                textManager.Write(new Text($"{introTimer}"));
+                introTimer -= gameTime.ElapsedGameTime;
+                entityManager.player.FastAccelerate();
+                if (introTimer <= TimeSpan.Zero)
+                {
+                    entityManager.player.FastBrake();
+                    entityManager.player.GiveControl();
+                }
+            }
+        }
+
 
         protected override void Draw(GameTime gameTime)
         {
@@ -180,7 +218,8 @@ namespace samochod
             {
                 menuManager.MainMenuDraw(_spriteBatch);
             }
-            if (gameRunning())
+
+            if (gameState != GameState.menu)
             {
                 levelManager.Draw(_spriteBatch);
                 entityManager.Draw(_spriteBatch);

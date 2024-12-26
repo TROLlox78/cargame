@@ -60,7 +60,7 @@ namespace samochod
 
             sb.Draw(textures[2],hitbox,Color.Black);
             sb.Draw(textures[2],noBezel,currentColor);
-            sb.DrawString(TextMan.fipps, text, textPosition, Color.Black);
+            sb.DrawString(TextManager.fipps, text, textPosition, Color.Black);
         }
 
 

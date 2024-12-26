@@ -48,7 +48,7 @@ namespace samochod
                 yellow *= 0.9f;
                 position = new Point(position.X + i, position.Y - i / 2);
                 color = new(1, yellow, 0);
-                sb.DrawString(TextMan.blazed, text, position.ToVector2(), color,
+                sb.DrawString(TextManager.blazed, text, position.ToVector2(), color,
                     rotation, origin, scale, SpriteEffects.None, 0f);
             }
 
@@ -57,7 +57,7 @@ namespace samochod
 
             color = new(255, 80, 0);
             color = new(90, 0, 40);
-            sb.DrawString(TextMan.blazed, text, position.ToVector2(), color,
+            sb.DrawString(TextManager.blazed, text, position.ToVector2(), color,
                     rotation, origin, scale, SpriteEffects.None, 0f);
 
         }

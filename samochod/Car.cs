@@ -33,7 +33,7 @@ namespace samochod
             //height = 43;
             //textureBoundry = new Rectangle(452,69, width, height);
             textureBoundry = models[Model.Player];
-            position = new Vector2(100, 100);
+            //position = new Vector2(100, 100);
             width = models[carModel].Width;
             height = models[carModel].Height;
             origin = new Vector2(width/2, height/2);

@@ -63,6 +63,13 @@ namespace samochod
                 Game1.gameState = GameState.loading;
             }
         }
+
+
+        public void Transition(SpriteBatch sb)
+        {
+            
+        }
+
         public void WinScreenDraw(SpriteBatch sb)
         {
 

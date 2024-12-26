@@ -14,8 +14,8 @@ namespace samochod
         public List<Tile> tileMap {  get; set; }
         // entityList
         public List<EntityTranslator> entities { get; set; }
-        // collisionZones
-        // winZone
+        // player intro : px, py, rot, time
+        public PlayerIntro pIntro { get; set; }
         public List<ZoneTranslator> zones { get; set; }
         public Level() {
         }

@@ -116,11 +116,13 @@ namespace samochod
             // minus one because levelID starts at 0
             return levelID+1>(levelsCount-1);
         }
-        public void LoadLevel()
+        public Level LoadLevel()
         {
             //makeLevel();
             LoadData(levelID);
+            //currentLevel.pIntro = new PlayerIntro(1245, 1000, -1.57f, 0.7f);
             LoadTexture();
+            return currentLevel;
         }
         private void makeLevel()
         {
@@ -157,7 +159,7 @@ namespace samochod
         }
         private void PopulateLevel()
         {
-            
+
             currentLevel.zones = new();
             // add entities
             currentLevel.entities = new();

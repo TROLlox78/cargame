@@ -48,7 +48,8 @@ namespace samochod
         public virtual void UpdateMouse() 
         {
             if (!Game1.debug) { return; }
-            if (hitbox.InBounds(Input.mousePosition) && Game1.canMouse )
+            if (hitbox.InBounds(Input.mousePosition) 
+                && Game1.canMouse && Game1.isFocused)
             {
                 if (Input.IsLeftPressed())
                 {
@@ -126,6 +127,16 @@ namespace samochod
                 pointSet.Add(vector2);
             }
             return pointSet;
+        }
+        protected bool isInBounds(Vector2 p)
+        {
+            if (p.X>0 && p.Y > 0 &&
+                p.X<=Game1.ResX && p.Y<=Game1.ResY)
+            {
+                return true;
+            }
+            return false;
+
         }
         protected void DrawHitbox(SpriteBatch sprite)
         {

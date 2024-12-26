@@ -7,6 +7,7 @@ namespace samochod
 {
     public class Text
     {
+        public static SpriteFont blazed, fipps;
         public Vector2 position;
         public string text;
         public float scale = 1;
@@ -21,7 +22,7 @@ namespace samochod
             position = pos;
             this.text = text;
         }
-        public Text(Vector2 pos, string text, float scale)
+        public Text(Vector2 pos, string text, float scale=1)
         {
             position = pos;
             this.text = text;
@@ -38,17 +39,27 @@ namespace samochod
         {
             this.text = text;
         }
+        public void Draw(SpriteBatch sp)
+        {
+            sp.DrawString(fipps, text, position, color,
+            0, Vector2.Zero, scale, SpriteEffects.None, 0f);
+
+        }
     }
     public  class TextManager
     {
         string mesage = "WSAD to move\nSpace to shift gears";
         public Text hintText;
-        public SpriteFont blazed, fipps;
-        public  List<Text> texts;
+        public Text timer;
+        public static SpriteFont blazed, fipps;
+        public List<Text> texts;
         public TextManager()
         {
+            Text.fipps = fipps;
+            Text.blazed = blazed;
             texts = new List<Text>();
             hintText = new(new Vector2(Game1.ResX/2 - 100,Game1.ResY*0.91f),"");
+            timer = new(new Vector2(Game1.ResX*0.01f, Game1.ResY*0.01f),"");
     }
         public void Write(Text text)
         {// don't pass a text object next time..
@@ -60,13 +71,15 @@ namespace samochod
         public void Draw(SpriteBatch spriteBatch)
         {
             // draw hitnt
-            spriteBatch.DrawString(fipps, hintText.text, hintText.position, hintText.color,
-            0, Vector2.Zero, hintText.scale, SpriteEffects.None, 0f);
-
-            foreach (Text text in texts)
+            hintText.Draw(spriteBatch);
+            timer.Draw(spriteBatch);
+            if (Game1.debug)
             {
-                spriteBatch.DrawString(fipps, text.text, text.position, text.color,
-                    0,Vector2.Zero,text.scale,SpriteEffects.None,0f);
+                foreach (Text text in texts)
+                {
+                    spriteBatch.DrawString(fipps, text.text, text.position, text.color,
+                        0, Vector2.Zero, text.scale, SpriteEffects.None, 0f);
+                }
             }
             texts.Clear();
             Text.reset();

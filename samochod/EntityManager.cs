@@ -67,6 +67,10 @@ namespace samochod
             {
                 AddZone(zon);
             }
+            // enable collsion checks
+            collided = false;
+            inGrassSpace = false;
+
         }
         public void AddEntity(Entity e) 
         {
@@ -92,6 +96,16 @@ namespace samochod
             
             player.init();
             player.ID = globalID++;
+            entities.Add(player);
+            return player;
+        }
+        public Player AddPlayer(PlayerIntro i)
+        {
+            player = new Player();
+            player.init();
+            player.ID = globalID++;
+            player.position = new Vector2(i.px,i.py);
+            player.rotation = i.rot;
             entities.Add(player);
             return player;
         }
@@ -130,10 +144,8 @@ namespace samochod
             
 
             /// COLLISON CHECKS
-            collided = false;
             inNoParkZone = false;
             inWinZone = false;
-            inGrassSpace = false;
             foreach (var entity in entities)
             {
                 foreach (var en2 in entities)
@@ -180,13 +192,7 @@ namespace samochod
             }
            
             textMan.Write(new Text($"ent: {entities.Count}"));
-            if (collided)
-            {
-                textMan.hintText.Update("Don't collide with cars!\nPress R to restart");
-                player.RemoveControl();
-                player.position += -player.velocity*2;
-                player.speed = 0;
-            }
+            
             if (inNoParkZone && inWinZone)
             {
                 textMan.hintText.Update("You have to park straighter");
@@ -197,7 +203,15 @@ namespace samochod
                 textMan.hintText.Update("Don't drive over grass!\nPress R to restart");
                 textMan.Write(new Text("Player drove over grass"));
                 player.RemoveControl();
+                player.Brake();
                 //TextManager.CallForRestart = true; ;
+            }
+            if (collided)
+            {
+                textMan.hintText.Update("Don't collide with cars!\nPress R to restart");
+                player.RemoveControl();
+                player.position += -player.velocity * 2;
+                player.speed = 0;
             }
             if (!inNoParkZone && inWinZone)
             {
