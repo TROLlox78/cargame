@@ -67,7 +67,7 @@ namespace samochod
             Component.TextMan = textManager;
             // load entity manager
             entityManager = new EntityManager();
-            entityManager.text = textManager;
+            entityManager.textMan = textManager;
             entityManager.audio = audioManager;
             Entity.audioMan = audioManager;
             LevelManager.tileSet = textures[3];
@@ -107,6 +107,7 @@ namespace samochod
                 entityManager.LevelMachen(LevelManager.currentLevel);
                 entityManager.AddPlayer();
                 
+                textManager.hintText.Update("Find a parking spot!");
                 gameState = GameState.running;
             }
             else if (gameRunning())
@@ -131,6 +132,16 @@ namespace samochod
                         // auto win
                         gameState = GameState.win;
                     }
+                    if (Input.IsKeyPressed(Keys.F))
+                    {
+                        gameState = GameState.loading;
+
+                    }
+                    if (Input.IsKeyPressed(Keys.N))
+                    {
+                        audioManager.ChangeMusicVolume(0.1f);
+
+                    }
                 }
                 if (gameState == GameState.win)
                 {
@@ -143,14 +154,12 @@ namespace samochod
                         gameState = GameState.loading;
                     }
                 }
-                if (Input.IsKeyPressed(Keys.F)) {
-                    gameState = GameState.loading;
-                   
-                }
-                if (Input.IsKeyPressed(Keys.N))
+                if (!debug)
                 {
-                    audioManager.ChangeMusicVolume(0.1f);
-
+                    if (Input.IsKeyPressed(Keys.M))
+                    {
+                        audioManager.SwitchMute();
+                    }
                 }
 
             }

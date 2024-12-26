@@ -14,15 +14,19 @@ namespace samochod
     {
         // list of all spawned entities
         public static List<Entity> entities;
-        // public static List<Zone> zones;
         // pool of available models to use
         public Dictionary<EntityType, Entity> entityPool;
         public Player player;
         //man
-        public TextManager text;
+        public TextManager textMan;
         public AudioManager audio;
         private int globalID = 0;
-        
+
+        // control collision bools
+        private bool collided = false;
+        private bool inNoParkZone = false;
+        private bool inWinZone = false;
+        private bool inGrassSpace = false;
 
         public void initEntityManager()
         {
@@ -123,17 +127,18 @@ namespace samochod
                     entities.RemoveAt(i);
                 }
             }
-            bool collided = false;
-            bool inNoParkZone = false;
-            bool inWinZone = false;
+            
+
+            /// COLLISON CHECKS
+            collided = false;
+            inNoParkZone = false;
+            inWinZone = false;
+            inGrassSpace = false;
             foreach (var entity in entities)
             {
                 foreach (var en2 in entities)
                 {
-                    if ( entity == en2)
-                    {
-                        continue;
-                    }
+                    if ( entity == en2){continue;}
                     if (entity is Car && en2 is Car)
                     {
                         if (entity.hitbox.Intersects(en2?.hitbox))
@@ -160,8 +165,8 @@ namespace samochod
                         {
                             inNoParkZone = true;
                         }
-                        if (entity.EntityType == EntityType.winZone &&
-                            !inNoParkZone)
+                        if (entity.EntityType == EntityType.winZone 
+                            )
                         {
                             inWinZone = true;
                         }
@@ -169,28 +174,40 @@ namespace samochod
                     }
                 }
             }
+            if (player.checkForIllegalBlocks())
+            {
+                inGrassSpace = true;
+            }
            
-            text.Write(new Text($"ent: {entities.Count}"));
+            textMan.Write(new Text($"ent: {entities.Count}"));
             if (collided)
             {
-                text.Write(new Text("Player touching"));
+                textMan.hintText.Update("Don't collide with cars!\nPress R to restart");
                 player.RemoveControl();
                 player.position += -player.velocity*2;
                 player.speed = 0;
-            }else if (inNoParkZone)
-            {
-                text.Write(new Text("Player park in lines"));
-
             }
-            else if (!inNoParkZone && inWinZone)
+            if (inNoParkZone && inWinZone)
+            {
+                textMan.hintText.Update("You have to park straighter");
+            }
+            
+            if (inGrassSpace)
+            {
+                textMan.hintText.Update("Don't drive over grass!\nPress R to restart");
+                textMan.Write(new Text("Player drove over grass"));
+                player.RemoveControl();
+                //TextManager.CallForRestart = true; ;
+            }
+            if (!inNoParkZone && inWinZone)
             {
                 Game1.gameState = GameState.win;
-                text.Write(new Text("Player in"));
+                textMan.Write(new Text("Player in"));
 
             }
-            else {
-                text.Write(new Text("Player chill"));
-
+            if (Game1.gameState == GameState.win)
+            {
+                textMan.hintText.Update("Well parked!\nPress Space to go to the next spot");
             }
 
         }

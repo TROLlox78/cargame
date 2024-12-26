@@ -36,10 +36,6 @@ namespace samochod
                 themeInstance.Volume = 0.4f;
             }
 
-            //MediaPlayer.IsRepeating = true;
-            //MediaPlayer.Volume = 0.4f;
-            //MediaPlayer.Play(songs[song]);
-            
         }
         public void StopMusic() 
         {
@@ -54,6 +50,10 @@ namespace samochod
             {
                 themeInstance.Play();
             }
+        }
+        public void SwitchMute()
+        {
+
         }
         public void ChangeMusicVolume(float vol)
         {

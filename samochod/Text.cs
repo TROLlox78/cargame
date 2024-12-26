@@ -2,10 +2,6 @@
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Reflection.Metadata;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace samochod
 {
@@ -38,21 +34,35 @@ namespace samochod
             y -= 20;
             this.text = text;
         }
+        public void Update(string text)
+        {
+            this.text = text;
+        }
     }
     public  class TextManager
     {
+        string mesage = "WSAD to move\nSpace to shift gears";
+        public Text hintText;
         public SpriteFont blazed, fipps;
         public  List<Text> texts;
         public TextManager()
         {
             texts = new List<Text>();
-        }
+            hintText = new(new Vector2(Game1.ResX/2 - 100,Game1.ResY*0.91f),"");
+    }
         public void Write(Text text)
         {// don't pass a text object next time..
             texts.Add(text);
         }
+        
+        
+
         public void Draw(SpriteBatch spriteBatch)
         {
+            // draw hitnt
+            spriteBatch.DrawString(fipps, hintText.text, hintText.position, hintText.color,
+            0, Vector2.Zero, hintText.scale, SpriteEffects.None, 0f);
+
             foreach (Text text in texts)
             {
                 spriteBatch.DrawString(fipps, text.text, text.position, text.color,
