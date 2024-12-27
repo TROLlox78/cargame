@@ -9,11 +9,13 @@ namespace samochod
 {
     public class MenuManager
     {
-        MenuState menuState = MenuState.main;
+        public MenuState menuState = MenuState.main;
         List<Component> mainMenu = new List<Component>();
         List<Component> optionsMenu = new List<Component>();
         List<Component> levelsMenu = new List<Component>();
+        List<Component> endMenu = new List<Component>();
         Text credit;
+        Text endTimes;
         public MenuManager() {
             #region main menu screen
             var options = new Button(new(Game1.ResX / 2, 650), new(300, 100), "Options");
@@ -43,8 +45,60 @@ namespace samochod
             #endregion
             #region level select menu screen
             levelsMenu.Add(new Title("LEVELS"));
+            var lvl1 = new Button(new(Game1.ResX*25/100, 300), new(300, 100), "Level 1");
+            var lvl2 = new Button(new(Game1.ResX*5/10, 300), new(300, 100), "Level 2");
+            var lvl3 = new Button(new(Game1.ResX*75/100, 300), new(300, 100), "Level 3");
 
+            var lvl4 = new Button(new(Game1.ResX*25/100, 500), new(300, 100), "Level 4");
+            var lvl5 = new Button(new(Game1.ResX*5/10, 500), new(300, 100), "Level 5");
+            var lvl6 = new Button(new(Game1.ResX*75/100, 500), new(300, 100), "Level 6");
+            levelsMenu.Add(lvl1); levelsMenu.Add(lvl2); levelsMenu.Add(lvl3);
+            levelsMenu.Add(lvl4); levelsMenu.Add(lvl5); levelsMenu.Add(lvl6);
+            levelsMenu.Add(back);
+            lvl1.Click += Lvl1_Click;
+            lvl2.Click += Lvl2_Click;
+            lvl3.Click += Lvl3_Click;
+            lvl4.Click += Lvl4_Click;
+            lvl5.Click += Lvl5_Click;
+            lvl6.Click += Lvl6_Click;
             #endregion
+            #region end
+
+            endMenu.Add(new Button(new(Game1.ResX / 2, Game1.ResY/2), new(500, 500), ""));
+            endMenu.Add(new Title("THE END"));
+            
+            #endregion
+        }
+
+        private void Lvl1_Click(object sender, EventArgs e)
+        {
+            LevelManager.levelID = 0;
+            Game1.gameState = GameState.loading;
+        }
+        private void Lvl2_Click(object sender, EventArgs e)
+        {
+            LevelManager.levelID = 1;
+            Game1.gameState = GameState.loading;
+        }
+        private void Lvl3_Click(object sender, EventArgs e)
+        {
+            LevelManager.levelID = 2;
+            Game1.gameState = GameState.loading;
+        }
+        private void Lvl4_Click(object sender, EventArgs e)
+        {
+            LevelManager.levelID = 3;
+            Game1.gameState = GameState.loading;
+        }
+        private void Lvl5_Click(object sender, EventArgs e)
+        {
+            LevelManager.levelID = 4;
+            Game1.gameState = GameState.loading;
+        }
+        private void Lvl6_Click(object sender, EventArgs e)
+        {
+            LevelManager.levelID = 5;
+            Game1.gameState = GameState.loading;
         }
 
         private void Difficulty_Click(object sender, EventArgs e)
@@ -94,6 +148,22 @@ namespace samochod
             menuState = MenuState.levelSelect;
         }
 
+        public void EndGame(GameScore score)
+        {
+            Game1.gameState = GameState.menu;
+            menuState = MenuState.end;
+            string x = "";
+            int i = 1;
+            TimeSpan total = TimeSpan.Zero;
+            foreach (var time in score.bestTimes)
+            {
+                x += $"Level {i++}: {time.Value:mm\\:ss\\.fff}\n";
+                total += time.Value;
+            }
+            x += $"Total Time: {total:mm\\:ss\\.fff}";
+            endTimes = new Text(new Vector2(Game1.ResX / 2 - 100, Game1.ResY * 0.3f), x);
+
+        }
         public void Update(GameTime gameTime) 
         {
             if (menuState == MenuState.main)
@@ -106,6 +176,8 @@ namespace samochod
                 {
                     Game1.gameState = GameState.loading;
                 }
+                
+
             }
             else if (menuState == MenuState.options)
             {
@@ -118,7 +190,7 @@ namespace samochod
                     menuState = MenuState.main;
                 }
             }
-            if (menuState == MenuState.levelSelect) {
+             else if (menuState == MenuState.levelSelect) {
                 foreach (var component in levelsMenu)
                 {
                     component.Update(gameTime);
@@ -128,10 +200,24 @@ namespace samochod
                     menuState = MenuState.main;
                 }
             }
+            if (menuState == MenuState.end) {
+                if (Input.IsKeyDown(Microsoft.Xna.Framework.Input.Keys.Q))
+                {
+                    menuState = MenuState.main;
+                    Game1.gameState = GameState.menu;
+                }
+            }
         }
 
 
-
+        public void EndDraw(SpriteBatch sb)
+        {
+            foreach (var component in endMenu)
+            {
+                component.Draw(sb);
+            }
+            endTimes.Draw(sb);
+        }
 
         public void WinScreenDraw(SpriteBatch sb)
         {
@@ -143,7 +229,6 @@ namespace samochod
             {
                 component.Draw(sb);
             }
-            credit.Draw(sb);
         }
         public void OptionsMenuDraw(SpriteBatch sb)
         {
@@ -151,7 +236,6 @@ namespace samochod
             {
                 component.Draw(sb);
             }
-            credit.Draw(sb);
         }
         public void Draw(SpriteBatch sb) 
         {
@@ -166,6 +250,10 @@ namespace samochod
             else if (menuState == MenuState.options)
             {
                 OptionsMenuDraw(sb);   
+            }
+            else if (menuState == MenuState.end)
+            {
+                EndDraw(sb);
             }
             credit.Draw(sb);
         }

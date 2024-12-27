@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 namespace samochod
 {
-    public class Text
+    public class Text 
     {
         public static SpriteFont blazed, fipps;
         public Vector2 position;
@@ -41,6 +41,7 @@ namespace samochod
         }
         public void Draw(SpriteBatch sp)
         {
+            if (text == null) { text = ""; }
             sp.DrawString(fipps, text, position, color,
             0, Vector2.Zero, scale, SpriteEffects.None, 0f);
 
@@ -63,6 +64,7 @@ namespace samochod
     }
         public void Write(Text text)
         {// don't pass a text object next time..
+            
             texts.Add(text);
         }
         

@@ -12,6 +12,7 @@ namespace samochod
         menu,
         loading,
         win,
+        end,
     }
     public enum MenuState
     {
@@ -19,7 +20,7 @@ namespace samochod
         none,
         options,
         levelSelect,
-
+        end,
     }
     public enum MessageType
     {
