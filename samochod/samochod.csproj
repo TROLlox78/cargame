@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
     <TargetFramework>net6.0</TargetFramework>
@@ -17,6 +17,14 @@
   <ItemGroup>
     <EmbeddedResource Include="Icon.ico" />
     <EmbeddedResource Include="Icon.bmp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="bin\Debug\net6.0\lvl\level0.data" />
+    <None Include="bin\Debug\net6.0\lvl\level1.data" />
+    <None Include="bin\Debug\net6.0\lvl\level10.data" />
+    <None Include="bin\Debug\net6.0\lvl\level2.data" />
+    <None Include="bin\Debug\net6.0\lvl\level3.data" />
+    <None Include="bin\Debug\net6.0\lvl\level4.data" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="MonoGame.Framework.DesktopGL" Version="3.8.1.303" />
