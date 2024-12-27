@@ -27,7 +27,7 @@ namespace samochod
         private TextManager textManager;
         public static GameState gameState = GameState.menu;
         Stopwatch sw;
-        // maybe create a texture manager but, not useful for small game
+        
         List<Texture2D> textures;
         LevelManager levelManager;
         MenuManager menuManager;
@@ -46,6 +46,11 @@ namespace samochod
             _graphics.IsFullScreen = false;
             _graphics.PreferredBackBufferWidth = ResX;
             _graphics.PreferredBackBufferHeight = ResY;
+            if (debug && false)
+            {
+                _graphics.SynchronizeWithVerticalRetrace = false;
+                this.IsFixedTimeStep = false;
+            }
             _graphics.ApplyChanges();
             textures = new List<Texture2D>();
             TextManager.blazed = Content.Load<SpriteFont>("Fonts/blazed");
@@ -86,13 +91,13 @@ namespace samochod
             audioManager.sounds.Add(Sound.theme, Content.Load<SoundEffect>("Sounds/theme_car"));
 
             audioManager.StartMusic(Sound.theme);
-
+            sw.Start();
         }
 
         protected override void Update(GameTime gameTime)
         {
             base.Update(gameTime);
-            sw.Start();
+            
             isFocused = IsActive;
             Input.Update(Mouse.GetState(), Keyboard.GetState());
             textManager.Write(new Text($"mX: {Input.mousePosition.X} mY: {Input.mousePosition.Y}"));
@@ -188,11 +193,12 @@ namespace samochod
                 }
 
             }
-
             if (sw.ElapsedMilliseconds > 1000)
             {
                 sw.Restart();
             }
+            textManager.Write(new($"frameTime[ms]: {sw.Elapsed.TotalMilliseconds}"));
+            sw.Restart();
         }
 
         private void playIntro(GameTime gameTime)

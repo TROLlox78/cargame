@@ -30,7 +30,7 @@ namespace samochod
         public Texture2D tileMapTexture; // only implement if perfomance bad or levels done 
         public static Level currentLevel;
         public int levelID = 0;
-        private int levelsCount = 4;
+        private int levelsCount = 5;
         // data
         private static Dictionary<TileID, Point> tileDic; // using Point because int, never float
         public static Texture2D tileSet;
@@ -120,7 +120,7 @@ namespace samochod
         {
             //makeLevel();
             LoadData(levelID);
-            //currentLevel.pIntro = new PlayerIntro(1245, 1000, -1.57f, 0.7f);
+            //currentLevel.pIntro = new PlayerIntro(66, 1000, -1.57f, 0.7f);
             LoadTexture();
             return currentLevel;
         }

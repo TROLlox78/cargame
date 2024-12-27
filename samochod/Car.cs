@@ -110,6 +110,12 @@ namespace samochod
                 {
                     changeModel();
                 }
+                if (Input.IsKeyPressed(Keys.C))
+                {
+                    int r = rand.Next() % 14;
+                    for (int i = 0; i < r; i++)
+                        changeModel();
+                }
             }
         }
         protected Color changeColor()
